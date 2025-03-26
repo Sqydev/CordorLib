@@ -1,11 +1,12 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef struct {
-    int Max_Size;
     int Front;
     int Back;
-    int Data[];
+    int* Data;
 } Queue;
 
 void InitQueue(Queue* queue, int Max_Size);
@@ -17,12 +18,16 @@ void PrintQueue(Queue* queue, int Mode);
 
 int main() {
     Queue q;
-    InitQueue(&q, 100);
+    //Może mieć o 3 za dużo kieszeni
+    InitQueue(&q, 4);
 
-    Enqueue(&q, 10);
-    Enqueue(&q, 12);
-    Enqueue(&q, 16);
-    Enqueue(&q, 11);
+    Enqueue(&q, 1);
+    Enqueue(&q, 2);
+    Enqueue(&q, 3);
+    Enqueue(&q, 4);
+    Enqueue(&q, 5);
+    Enqueue(&q, 5);
+
 
     PrintQueue(&q, 3);
 
@@ -38,7 +43,7 @@ int main() {
 void InitQueue(Queue* queue, int Max_Size) {
     queue->Front = 0;
     queue->Back = 0;
-    queue->Max_Size = Max_Size;
+    queue->Data = (int *)malloc(Max_Size * sizeof(int));
 }
 
 bool IsEmpty(Queue* queue) {
@@ -50,28 +55,33 @@ bool IsEmpty(Queue* queue) {
     }
 }
 
-//bool IsFull(Queue* queue) {
-//    if() {
-//        return true;
-//    }
-//    else {
-//        return false;
-//    }
-//}
+bool IsFull(Queue* queue) {
+    if(queue->Back == sizeof(queue->Data)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 void Enqueue(Queue* queue, int value) {
-    queue->Data[queue->Back] = value;
-    queue->Back++;
+    //if(IsFull(queue) == false) {
+        queue->Data[queue->Back] = value;
+        queue->Back++;
+        //}
+    //else {
+        //printf("Queue is full");
+        //}
 }
 
 void Dequeue(Queue* queue) {
-    if(IsEmpty(queue) == false) {
+    //if(IsEmpty(queue) == false) {
         queue->Data[queue->Front] = 0;
         queue->Front++;
-    }
-    else {
-        printf("Queue is empty");
-    }
+        //}
+    //else {
+        //printf("Queue is empty");
+        //}
 }
 
 void PrintQueue(Queue* queue, int Mode) {
