@@ -17,7 +17,7 @@ void PrintQueue(Queue* queue, int Mode);
 
 int main() {
     Queue q;
-    InitQueue(&q);
+    InitQueue(&q, 100);
 
     Enqueue(&q, 10);
     Enqueue(&q, 12);
@@ -50,14 +50,14 @@ bool IsEmpty(Queue* queue) {
     }
 }
 
-bool IsFull(Queue* queue) {
-    if() {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+//bool IsFull(Queue* queue) {
+//    if() {
+//        return true;
+//    }
+//    else {
+//        return false;
+//    }
+//}
 
 void Enqueue(Queue* queue, int value) {
     queue->Data[queue->Back] = value;
