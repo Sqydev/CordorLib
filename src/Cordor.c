@@ -4,13 +4,13 @@
 #include <stdlib.h>
 
 typedef struct {
-    int Size;
+    int Max_Size;
     int Front;
     int Back;
     int* Data;
 } Queue;
 
-void InitQueue(Queue* queue, int Max_Size);
+void InitQueue(Queue* queue, int Input_Max_Size);
 bool IsFull(Queue* queue);
 bool IsEmpty(Queue* queue);
 void Enqueue(Queue* queue, int value);
@@ -34,6 +34,8 @@ int main() {
 
     printf("\n");
 
+    printf("%d\n\n", Peek(&q));
+
     Dequeue(&q);
 
     PrintQueue(&q, 3);
@@ -43,11 +45,12 @@ int main() {
     return 0;
 }
 
-void InitQueue(Queue* queue, int Max_Size) {
+void InitQueue(Queue* queue, int Input_Max_Size) {
     queue->Front = 0;
     queue->Back = 0;
-    queue->Size = Max_Size;
-    queue->Data = malloc(sizeof(int) * queue->Size);
+    queue->Max_Size = Input_Max_Size;
+    //Debug this pice of shit allocating 3 more spaces then needed
+    queue->Data = malloc(sizeof(int) * queue->Max_Size);
 }
 
 bool IsEmpty(Queue* queue) {
@@ -60,7 +63,7 @@ bool IsEmpty(Queue* queue) {
 }
 
 bool IsFull(Queue* queue) {
-    if(queue->Back == queue->Size) {
+    if(queue->Back == queue->Max_Size) {
         return true;
     }
     else {
