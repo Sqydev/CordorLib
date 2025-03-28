@@ -11,49 +11,6 @@ typedef struct {
     void* Data;
 } Queue;
 
-void InitQueue(Queue* queue, char In_Type, int Input_Max_Size);
-bool IsFull(Queue* queue);
-bool IsEmpty(Queue* queue);
-
-#define Enqueue(q, val) \
-    ((q)->Type == 'i' ? Without_Macro_Enqueue(q, &(int){val}) : \
-    (q)->Type == 'f' ? Without_Macro_Enqueue(q, &(float){val}) : \
-    (q)->Type == 'c' ? Without_Macro_Enqueue(q, &(char){val}) : \
-    (q)->Type == 'd' ? Without_Macro_Enqueue(q, &(double){val}) : \
-    (q)->Type == 'l' ? Without_Macro_Enqueue(q, &(long){val}) : \
-    (void)0)
-
-void Without_Macro_Enqueue(Queue* queue, void* value);
-void Dequeue(Queue* queue);
-void* Peek(Queue* queue);
-void PrintQueue(Queue* queue, int Mode);
-
-int main() {
-    Queue q;
-    InitQueue(&q, 'i', 4);
-
-    Enqueue(&q, 1);
-    Enqueue(&q, 2);
-    Enqueue(&q, 3);
-    Enqueue(&q, 4);
-    Enqueue(&q, 5);
-    Enqueue(&q, 6);
-
-    PrintQueue(&q, 3);
-
-    printf("\n");
-
-    printf("%d\n\n", Peek(&q));
-
-    Dequeue(&q);
-
-    PrintQueue(&q, 3);
-
-    printf("\n%d\n", Peek(&q));
-
-    return 0;
-}
-
 void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
     queue->Front = 0;
     queue->Back = 0;
@@ -61,7 +18,6 @@ void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
     queue->Type = In_Type;
 
     if (queue->Type == 'i') {
-        //Debug this pice of shit allocating 3 more spaces then needed
         queue->Data = malloc(sizeof(int) * queue->Max_Size);
     }
     else if(queue->Type == 'f') {
@@ -96,36 +52,45 @@ bool IsFull(Queue* queue) {
     }
 }
 
-//Here's long but up(Where Without_Macro_Enqueue is declared)
+#define Enqueue(queue, val) \
+    ((queue)->Type == 'i' ? Without_Macro_Enqueue(queue, &(int){val}) : \
+    (queue)->Type == 'f' ? Without_Macro_Enqueue(queue, &(float){val}) : \
+    (queue)->Type == 'c' ? Without_Macro_Enqueue(queue, &(char){val}) : \
+    (queue)->Type == 'd' ? Without_Macro_Enqueue(queue, &(double){val}) : \
+    (queue)->Type == 'l' ? Without_Macro_Enqueue(queue, &(long){val}) : \
+    (void)0)
 
 void Without_Macro_Enqueue(Queue* queue, void* value) {
     if(IsFull(queue) == false) {
         if(queue->Type == 'i') {
             ((int*)queue->Data)[queue->Back] = *(int*)value;
         }
-        else if(queue->Type == 'i') {
+        else if(queue->Type == 'f') {
             ((float*)queue->Data)[queue->Back] = *(float*)value;
         }
-        else if(queue->Type == 'i') {
+        else if(queue->Type == 'c') {
             ((char*)queue->Data)[queue->Back] = *(char*)value;
         }
-        else if(queue->Type == 'i') {
+        else if(queue->Type == 'd') {
             ((double*)queue->Data)[queue->Back] = *(double*)value;
         }
-        else if(queue->Type == 'i') {
+        else if(queue->Type == 'l') {
             ((long*)queue->Data)[queue->Back] = *(long*)value;
         }
         queue->Back++;
     }
 }
 
-void Dequeue(Queue* queue) {
-    if(IsEmpty(queue) == false) {
-        queue->Front++;
+    void Dequeue(Queue* queue) {
+        if(IsEmpty(queue) == false) {
+            queue->Front++;
+        }
     }
-}
 
-void* Peek(Queue* queue) {
+#define Peek(queue) \
+    ()
+
+void* Without_Macro_Peek(Queue* queue) {
     if (IsEmpty(queue) == false) {
         if(queue->Type == 'i') {
             return ((int *)queue->Data + queue->Front);
@@ -174,4 +139,31 @@ void PrintQueue(Queue* queue, int Mode) {
     if(Mode == 3) {
         printf("\n");
     }
+}
+
+
+int main() {
+    Queue q;
+    InitQueue(&q, 'i', 4);
+
+    Enqueue(&q, 1);
+    Enqueue(&q, 2);
+    Enqueue(&q, 3);
+    Enqueue(&q, 4);
+    Enqueue(&q, 5);
+    Enqueue(&q, 6);
+
+    PrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("\n%d\n", Peek(&q));
+
+    Dequeue(&q);
+
+    PrintQueue(&q, 3);
+
+    printf("\n%d\n", Peek(&q));
+
+    return 0;
 }
