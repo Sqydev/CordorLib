@@ -81,14 +81,21 @@ void Without_Macro_Enqueue(Queue* queue, void* value) {
     }
 }
 
-    void Dequeue(Queue* queue) {
-        if(IsEmpty(queue) == false) {
-            queue->Front++;
-        }
+void Dequeue(Queue* queue) {
+    if(IsEmpty(queue) == false) {
+        queue->Front++;
     }
+}
 
+
+//Zrób w definie: jak "typ": typ* var = (typ *)Without_Macro_Peek(queue); a potem return var;
 #define Peek(queue) \
-    ()
+    (((queue)->Type == 'i' ? Without_Macro_Peek(queue, &(int)) : \
+    ((queue)->Type == 'f' ? Without_Macro_Peek(queue, &(float)) : \
+    ((queue)->Type == 'c' ? Without_Macro_Peek(queue, &(char)) : \
+    ((queue)->Type == 'd' ? Without_Macro_Peek(queue, &(double)) : \
+    ((queue)->Type == 'l' ? Without_Macro_Peek(queue, &(long)) : \
+    (void)0)
 
 void* Without_Macro_Peek(Queue* queue) {
     if (IsEmpty(queue) == false) {
