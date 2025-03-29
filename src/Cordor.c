@@ -52,13 +52,13 @@ bool IsFull(Queue* queue) {
     }
 }
 
-#define Enqueue(queue, val) \
-    ((queue)->Type == 'i' ? Without_Macro_Enqueue(queue, &(int){val}) : \
+#define Enqueue(queue, val) ( \
+    (queue)->Type == 'i' ? Without_Macro_Enqueue(queue, &(int){val}) : \
     (queue)->Type == 'f' ? Without_Macro_Enqueue(queue, &(float){val}) : \
     (queue)->Type == 'c' ? Without_Macro_Enqueue(queue, &(char){val}) : \
     (queue)->Type == 'd' ? Without_Macro_Enqueue(queue, &(double){val}) : \
-    (queue)->Type == 'l' ? Without_Macro_Enqueue(queue, &(long){val}) : \
-    (void)0)
+    (queue)->Type == 'l' ? Without_Macro_Enqueue(queue, &(long){val}) : 0 \
+    )
 
 void Without_Macro_Enqueue(Queue* queue, void* value) {
     if(IsFull(queue) == false) {
@@ -87,15 +87,13 @@ void Dequeue(Queue* queue) {
     }
 }
 
-
-//Zrób w definie: jak "typ": typ* var = (typ *)Without_Macro_Peek(queue); a potem return var;
-#define Peek(queue) \
-    (((queue)->Type == 'i' ? Without_Macro_Peek(queue, &(int)) : \
-    ((queue)->Type == 'f' ? Without_Macro_Peek(queue, &(float)) : \
-    ((queue)->Type == 'c' ? Without_Macro_Peek(queue, &(char)) : \
-    ((queue)->Type == 'd' ? Without_Macro_Peek(queue, &(double)) : \
-    ((queue)->Type == 'l' ? Without_Macro_Peek(queue, &(long)) : \
-    (void)0)
+#define Peek(queue) ( \
+    (queue)->Type == 'i' ? *(int *)Without_Macro_Peek(queue) : \
+    (queue)->Type == 'j' ? *(float *)Without_Macro_Peek(queue) : \
+    (queue)->Type == 'c' ? *(char *)Without_Macro_Peek(queue) : \
+    (queue)->Type == 'd' ? *(double *)Without_Macro_Peek(queue) : \
+    (queue)->Type == 'l' ? *(long *)Without_Macro_Peek(queue) : 0 \
+)
 
 void* Without_Macro_Peek(Queue* queue) {
     if (IsEmpty(queue) == false) {
@@ -164,13 +162,15 @@ int main() {
 
     printf("\n");
 
-    printf("\n%d\n", Peek(&q));
+    printf("%d\n\n", (int)Peek(&q));
 
     Dequeue(&q);
 
     PrintQueue(&q, 3);
 
-    printf("\n%d\n", Peek(&q));
+    printf("\n");
+
+    printf("%d\n", (int)Peek(&q));
 
     return 0;
 }
