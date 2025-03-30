@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 typedef struct {
     int Max_Size;
@@ -10,6 +12,10 @@ typedef struct {
     int Back;
     void* Data;
 } Queue;
+
+#define CreateQueue(name, In_Type, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, In_Type, In_Max_Size);
 
 void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
     queue->Front = 0;
@@ -116,40 +122,50 @@ void* Without_Macro_Peek(Queue* queue) {
     return NULL;
 }
 
-void PrintQueue(Queue* queue, int Mode) {
-    for(int i = queue->Front; i < queue->Back; i++) {
-        if(queue->Type == 'i') {
-            printf("%d", ((int *)queue->Data)[i]);
-        }
-        else if(queue->Type == 'f') {
-            printf("%f", ((float *)queue->Data)[i]);
-        }
-        else if(queue->Type == 'c') {
-            printf("%c", ((char *)queue->Data)[i]);
-        }
-        else if(queue->Type == 'd') {
-            printf("%f", ((double *)queue->Data)[i]);
-        }
-        else if(queue->Type == 'l') {
-            printf("%ld", ((long *)queue->Data)[i]);
-        }
+void CleanQueue(Queue* queue) {
+    queue->Front = 0;
+    queue->Back = 0;
+    memset(queue->Data, 0, sizeof(queue->Data));
+}
 
-        if(Mode == 1 || Mode == 3) {
-            printf(" ");
+void PrintQueue(Queue* queue, int Mode) {
+    if(IsEmpty(queue) == false) {
+        for(int i = queue->Front; i < queue->Back; i++) {
+            if(queue->Type == 'i') {
+                printf("%d", ((int *)queue->Data)[i]);
+            }
+            else if(queue->Type == 'f') {
+                printf("%f", ((float *)queue->Data)[i]);
+            }
+            else if(queue->Type == 'c') {
+                printf("%c", ((char *)queue->Data)[i]);
+            }
+            else if(queue->Type == 'd') {
+                printf("%f", ((double *)queue->Data)[i]);
+            }
+            else if(queue->Type == 'l') {
+                printf("%ld", ((long *)queue->Data)[i]);
+            }
+
+            if(Mode == 1 || Mode == 3) {
+                printf(" ");
+            }
+            else if(Mode == 2) {
+                printf("\n");
+            }
         }
-        else if(Mode == 2) {
+        if(Mode == 3) {
             printf("\n");
         }
     }
-    if(Mode == 3) {
-        printf("\n");
+    else {
+        printf("It's empty\n");
     }
 }
 
 
 int main() {
-    Queue q;
-    InitQueue(&q, 'i', 4);
+    CreateQueue(q, 'i', 4);
 
     Enqueue(&q, 1);
     Enqueue(&q, 2);
@@ -170,7 +186,11 @@ int main() {
 
     printf("\n");
 
-    printf("%d\n", (int)Peek(&q));
+    printf("%d\n\n", (int)Peek(&q));
+
+    CleanQueue(&q);
+
+    PrintQueue(&q, 3);
 
     return 0;
 }
