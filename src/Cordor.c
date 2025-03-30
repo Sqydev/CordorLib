@@ -5,6 +5,10 @@
 #include <string.h>
 
 
+//zrób aby była boolka infinite size, i żeby w inicie allokowało tylko na jedną kieszonkę a jak jest enqueue to żeby reallokowało + 1 kieszonkę, i jak jest infinite size false to żeby ten proces się zatrzymywał jak osiągnie max size
+//że jak w initqueue In_Max_Size == 0 to żeby infinite size = 1 a jak nie to infinite size == 0. allokuje 1*sizeof(int) i w enqueue realokuje +1sizeof(int)(jedną więcej kieszeń)i w dequeue po tym co jest teraz ale przed queue->back--;
+//jeszcze deallokowało to na co wskazuje queue->back
+
 typedef struct {
     int Max_Size;
     char Type;
@@ -197,7 +201,7 @@ void UNITEST_Enqueue_Speed() {
     CreateQueue(ql, 'l', size);
 
     //Even if there's a big ass number the same thing but with printf's will be 3 times slower. conclusion: Enqueue is fucking faster then printf
-    for(int i = 0; i < 100000000; i++) {
+    for(int i = 0; i < ilep; i++) {
         Enqueue(&qi, i);
         Enqueue(&qf, i);
         Enqueue(&qc, 'q');
