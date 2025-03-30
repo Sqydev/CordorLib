@@ -180,19 +180,189 @@ void PrintQueue(Queue* queue, int Mode) {
     }
 }
 
-void UNITEST() {
-    CreateQueue(qi, 'i', 4);
-    CreateQueue(qf, 'f', 4);
-    CreateQueue(qc, 'c', 4);
-    CreateQueue(qd, 'd', 4);
-    CreateQueue(ql, 'l', 4);
+void UNITEST_Enqueue_Speed() {
 
+    int size;
+    printf("Ile_Dużo:");
+    scanf("%d", &size);
 
+    int ilep;
+    printf("Ile_Prubować:");
+    scanf("%d", &ilep);
+
+    CreateQueue(qi, 'i', size);
+    CreateQueue(qf, 'f', size);
+    CreateQueue(qc, 'c', size);
+    CreateQueue(qd, 'd', size);
+    CreateQueue(ql, 'l', size);
+
+    //Even if there's a big ass number the same thing but with printf's will be 3 times slower. conclusion: Enqueue is fucking faster then printf
+    for(int i = 0; i < 100000000; i++) {
+        Enqueue(&qi, i);
+        Enqueue(&qf, i);
+        Enqueue(&qc, 'q');
+        Enqueue(&qd, i);
+        Enqueue(&ql, i);
+    }
+
+    PrintQueue(&qi, 3);
+    PrintQueue(&qf, 3);
+    PrintQueue(&qc, 3);
+    PrintQueue(&qd, 3);
+    PrintQueue(&ql, 3);
 }
 
+void UNITEST_InitSpeed_and_Memeff() {
+
+    int max;
+    printf("Max_Size: ");
+    scanf("%d", &max);
+
+    char type;
+    printf("Type: ");
+    scanf(" %c", &type);
+
+    Queue q;
+
+    q.Front = 0;
+    q.Back = 0;
+    q.Max_Size = max;
+    q.Type = type;
+
+    if (q.Type == 'i') {
+        q.Data = malloc(sizeof(int) * q.Max_Size);
+    }
+    else if(q.Type == 'f') {
+        q.Data = malloc(sizeof(float) * q.Max_Size);
+    }
+    else if(q.Type == 'c') {
+        q.Data = malloc(sizeof(char) * q.Max_Size);
+    }
+    else if(q.Type == 'd') {
+        q.Data = malloc(sizeof(double) * q.Max_Size);
+    }
+    else if(q.Type == 'l') {
+        q.Data = malloc(sizeof(long) * q.Max_Size);
+    }
+
+    char qwe;
+    scanf(" %c", &qwe);
+}
+
+void UNITEST_DequeueSpeed_and_Memeff() {
+
+    int max;
+    printf("Max_Size: ");
+    scanf("%d", &max);
+
+    char type;
+    printf("Type: ");
+    scanf(" %c", &type);
+
+    Queue q;
+
+    q.Front = 0;
+    q.Back = 0;
+    q.Max_Size = max;
+    q.Type = type;
+
+    if (q.Type == 'i') {
+        q.Data = malloc(sizeof(int) * q.Max_Size);
+    }
+    else if(q.Type == 'f') {
+        q.Data = malloc(sizeof(float) * q.Max_Size);
+    }
+    else if(q.Type == 'c') {
+        q.Data = malloc(sizeof(char) * q.Max_Size);
+    }
+    else if(q.Type == 'd') {
+        q.Data = malloc(sizeof(double) * q.Max_Size);
+    }
+    else if(q.Type == 'l') {
+        q.Data = malloc(sizeof(long) * q.Max_Size);
+    }
+
+    char qwe;
+    scanf(" %c", &qwe);
+
+    memset(q.Data, 1, sizeof(int));
+
+    scanf(" %c", &qwe);
+
+    for(int i = 0; i < max; i++) {
+        Dequeue(&q);
+    }
+
+    scanf(" %c", &qwe);
+}
+
+void UNITEST_DeletQueue_MemEff() {
+    int max;
+    printf("Max_Size: ");
+    scanf("%d", &max);
+
+    char type;
+    printf("Type: ");
+    scanf(" %c", &type);
+
+    Queue q;
+
+    q.Front = 0;
+    q.Back = 0;
+    q.Max_Size = max;
+    q.Type = type;
+
+    if (q.Type == 'i') {
+        q.Data = malloc(sizeof(int) * q.Max_Size);
+    }
+    else if(q.Type == 'f') {
+        q.Data = malloc(sizeof(float) * q.Max_Size);
+    }
+    else if(q.Type == 'c') {
+        q.Data = malloc(sizeof(char) * q.Max_Size);
+    }
+    else if(q.Type == 'd') {
+        q.Data = malloc(sizeof(double) * q.Max_Size);
+    }
+    else if(q.Type == 'l') {
+        q.Data = malloc(sizeof(long) * q.Max_Size);
+    }
+
+    char qwe;
+    scanf(" %c", &qwe);
+
+    DeleteQueue(&q);
+
+    scanf(" %c", &qwe);
+}
 
 int main() {
-    UNITEST();
+    CreateQueue(q, 'i', 4);
+
+    Enqueue(&q, 1);
+    Enqueue(&q, 2);
+    Enqueue(&q, 3);
+    Enqueue(&q, 4);
+    Enqueue(&q, 5);
+    Enqueue(&q, 6);
+
+    PrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("%d\n\n", (int)Peek(&q));
+
+    Dequeue(&q);
+
+    PrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("%d\n\n", (int)Peek(&q));
+
+    CleanQueue(&q);
+
+    PrintQueue(&q, 3);
 
     return 0;
 }
