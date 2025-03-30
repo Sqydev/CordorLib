@@ -15,7 +15,7 @@ typedef struct {
 
 #define CreateQueue(name, In_Type, In_Max_Size) \
     Queue name; \
-    InitQueue(&name, In_Type, In_Max_Size);
+    InitQueue(&name, In_Type, In_Max_Size)
 
 void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
     queue->Front = 0;
@@ -88,14 +88,23 @@ void Without_Macro_Enqueue(Queue* queue, void* value) {
 }
 
 void Dequeue(Queue* queue) {
-    if(IsEmpty(queue) == false) {
-        queue->Front++;
+    if (IsEmpty(queue) == false) {
+        size_t elem_size =
+            queue->Type == 'i' ? sizeof(int) :
+            queue->Type == 'f' ? sizeof(float) :
+            queue->Type == 'c' ? sizeof(char) :
+            queue->Type == 'd' ? sizeof(double) :
+            queue->Type == 'l' ? sizeof(long) : 0;
+
+            memmove(queue->Data, (char*)queue->Data + elem_size, (queue->Back - 1) * elem_size);
+            queue->Back--;
     }
 }
 
+
 #define Peek(queue) ( \
     (queue)->Type == 'i' ? *(int *)Without_Macro_Peek(queue) : \
-    (queue)->Type == 'j' ? *(float *)Without_Macro_Peek(queue) : \
+    (queue)->Type == 'f' ? *(float *)Without_Macro_Peek(queue) : \
     (queue)->Type == 'c' ? *(char *)Without_Macro_Peek(queue) : \
     (queue)->Type == 'd' ? *(double *)Without_Macro_Peek(queue) : \
     (queue)->Type == 'l' ? *(long *)Without_Macro_Peek(queue) : 0 \
@@ -126,6 +135,14 @@ void CleanQueue(Queue* queue) {
     queue->Front = 0;
     queue->Back = 0;
     memset(queue->Data, 0, sizeof(queue->Data));
+}
+
+int WaitingQueueCount(Queue* queue) {
+    return queue->Back;
+}
+
+void DeleteQueue(Queue* queue) {
+    free(queue->Data);
 }
 
 void PrintQueue(Queue* queue, int Mode) {
@@ -163,34 +180,19 @@ void PrintQueue(Queue* queue, int Mode) {
     }
 }
 
+void UNITEST() {
+    CreateQueue(qi, 'i', 4);
+    CreateQueue(qf, 'f', 4);
+    CreateQueue(qc, 'c', 4);
+    CreateQueue(qd, 'd', 4);
+    CreateQueue(ql, 'l', 4);
+
+
+}
+
 
 int main() {
-    CreateQueue(q, 'i', 4);
-
-    Enqueue(&q, 1);
-    Enqueue(&q, 2);
-    Enqueue(&q, 3);
-    Enqueue(&q, 4);
-    Enqueue(&q, 5);
-    Enqueue(&q, 6);
-
-    PrintQueue(&q, 3);
-
-    printf("\n");
-
-    printf("%d\n\n", (int)Peek(&q));
-
-    Dequeue(&q);
-
-    PrintQueue(&q, 3);
-
-    printf("\n");
-
-    printf("%d\n\n", (int)Peek(&q));
-
-    CleanQueue(&q);
-
-    PrintQueue(&q, 3);
+    UNITEST();
 
     return 0;
 }
