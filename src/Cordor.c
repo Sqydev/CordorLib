@@ -4,11 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-//zrób aby była boolka infinite size, i żeby w inicie allokowało tylko na jedną kieszonkę a jak jest enqueue to żeby reallokowało + 1 kieszonkę, i jak jest infinite size false to żeby ten proces się zatrzymywał jak osiągnie max size
-//że jak w initqueue In_Max_Size == 0 to żeby infinite size = 1 a jak nie to infinite size == 0. allokuje 1*sizeof(int) i w enqueue realokuje +1sizeof(int)(jedną więcej kieszeń)i w dequeue po tym co jest teraz ale przed queue->back--;
-//jeszcze deallokowało to na co wskazuje queue->back
-
 typedef struct {
     int Max_Size;
     int Size;
@@ -73,7 +68,7 @@ bool IsFull(Queue* queue) {
     )
 
 void Without_Macro_Enqueue(Queue* queue, void* value) {
-    if(IsFull(queue) == false) {
+    if(IsFull(queue) == false || queue->Max_Size < 1) {
         queue->Size++;
 
         if(queue->Type == 'i') {
@@ -109,12 +104,12 @@ void Dequeue(Queue* queue) {
                         queue->Type == 'd' ? sizeof(double) :
                         queue->Type == 'l' ? sizeof(long) : 0;
 
-        memmove(queue->Data, (char*)queue->Data + elem_size, (queue->Back - 1) * elem_size);
-
         queue->Back--;
         queue->Size--;
 
-        queue->Data = realloc(queue->Data, queue->Size);
+        memmove(queue->Data, (char *)queue->Data + elem_size, elem_size * (queue->Size));
+
+        queue->Data = realloc(queue->Data, queue->Size * elem_size);
     }
 }
 
@@ -199,14 +194,11 @@ void PrintQueue(Queue* queue, int Mode) {
 }
 
 int main() {
-    CreateQueue(q, 'i', 5);
+    CreateQueue(q, 'i', 0);
 
-    Enqueue(&q, 1);
-    Enqueue(&q, 2);
-    Enqueue(&q, 3);
-    Enqueue(&q, 4);
-    Enqueue(&q, 5);
-    Enqueue(&q, 6);
+    for(int i = 1; i <= 100; i++) {
+        Enqueue(&q, i);
+    }
 
     PrintQueue(&q, 3);
 
