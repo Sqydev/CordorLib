@@ -11,10 +11,11 @@
 
 typedef struct {
     int Max_Size;
+    int Size;
     char Type;
     int Front;
     int Back;
-    void* Data;
+    void** Data;
 } Queue;
 
 #define CreateQueue(name, In_Type, In_Max_Size) \
@@ -25,27 +26,28 @@ void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
     queue->Front = 0;
     queue->Back = 0;
     queue->Max_Size = Input_Max_Size;
+    queue->Size = 0;
     queue->Type = In_Type;
 
     if (queue->Type == 'i') {
-        queue->Data = malloc(sizeof(int) * queue->Max_Size);
+        queue->Data = malloc(sizeof(int) * queue->Size);
     }
     else if(queue->Type == 'f') {
-        queue->Data = malloc(sizeof(float) * queue->Max_Size);
+        queue->Data = malloc(sizeof(float) * queue->Size);
     }
     else if(queue->Type == 'c') {
-        queue->Data = malloc(sizeof(char) * queue->Max_Size);
+        queue->Data = malloc(sizeof(char) * queue->Size);
     }
     else if(queue->Type == 'd') {
-        queue->Data = malloc(sizeof(double) * queue->Max_Size);
+        queue->Data = malloc(sizeof(double) * queue->Size);
     }
     else if(queue->Type == 'l') {
-        queue->Data = malloc(sizeof(long) * queue->Max_Size);
+        queue->Data = malloc(sizeof(long) * queue->Size);
     }
 }
 
 bool IsEmpty(Queue* queue) {
-    if(queue->Back == queue->Front) {
+    if(queue->Size == 0) {
         return true;
     }
     else {
@@ -54,7 +56,7 @@ bool IsEmpty(Queue* queue) {
 }
 
 bool IsFull(Queue* queue) {
-    if(queue->Back == queue->Max_Size) {
+    if(queue->Size == queue->Max_Size) {
         return true;
     }
     else {
@@ -72,36 +74,47 @@ bool IsFull(Queue* queue) {
 
 void Without_Macro_Enqueue(Queue* queue, void* value) {
     if(IsFull(queue) == false) {
+        queue->Size++;
+
         if(queue->Type == 'i') {
+            queue->Data = realloc(queue->Data, sizeof(int) * queue->Size);
             ((int*)queue->Data)[queue->Back] = *(int*)value;
         }
         else if(queue->Type == 'f') {
+            queue->Data = realloc(queue->Data, sizeof(float) * queue->Size);
             ((float*)queue->Data)[queue->Back] = *(float*)value;
         }
         else if(queue->Type == 'c') {
+            queue->Data = realloc(queue->Data, sizeof(char) * queue->Size);
             ((char*)queue->Data)[queue->Back] = *(char*)value;
         }
         else if(queue->Type == 'd') {
+            queue->Data = realloc(queue->Data, sizeof(double) * queue->Size);
             ((double*)queue->Data)[queue->Back] = *(double*)value;
         }
         else if(queue->Type == 'l') {
+            queue->Data = realloc(queue->Data, sizeof(long) * queue->Size);
             ((long*)queue->Data)[queue->Back] = *(long*)value;
         }
+
         queue->Back++;
     }
 }
 
 void Dequeue(Queue* queue) {
     if (IsEmpty(queue) == false) {
-        size_t elem_size =
-            queue->Type == 'i' ? sizeof(int) :
-            queue->Type == 'f' ? sizeof(float) :
-            queue->Type == 'c' ? sizeof(char) :
-            queue->Type == 'd' ? sizeof(double) :
-            queue->Type == 'l' ? sizeof(long) : 0;
+        size_t elem_size = queue->Type == 'i' ? sizeof(int) :
+                        queue->Type == 'f' ? sizeof(float) :
+                        queue->Type == 'c' ? sizeof(char) :
+                        queue->Type == 'd' ? sizeof(double) :
+                        queue->Type == 'l' ? sizeof(long) : 0;
 
-            memmove(queue->Data, (char*)queue->Data + elem_size, (queue->Back - 1) * elem_size);
-            queue->Back--;
+        memmove(queue->Data, (char*)queue->Data + elem_size, (queue->Back - 1) * elem_size);
+
+        queue->Back--;
+        queue->Size--;
+
+        queue->Data = realloc(queue->Data, queue->Size);
     }
 }
 
@@ -138,11 +151,12 @@ void* Without_Macro_Peek(Queue* queue) {
 void CleanQueue(Queue* queue) {
     queue->Front = 0;
     queue->Back = 0;
-    memset(queue->Data, 0, sizeof(queue->Data));
+    queue->Size = 0;
+    free(queue->Data);
 }
 
-int WaitingQueueCount(Queue* queue) {
-    return queue->Back;
+int QueueCount(Queue* queue) {
+    return queue->Size;
 }
 
 void DeleteQueue(Queue* queue) {
@@ -184,164 +198,8 @@ void PrintQueue(Queue* queue, int Mode) {
     }
 }
 
-void UNITEST_Enqueue_Speed() {
-
-    int size;
-    printf("Ile_Dużo:");
-    scanf("%d", &size);
-
-    int ilep;
-    printf("Ile_Prubować:");
-    scanf("%d", &ilep);
-
-    CreateQueue(qi, 'i', size);
-    CreateQueue(qf, 'f', size);
-    CreateQueue(qc, 'c', size);
-    CreateQueue(qd, 'd', size);
-    CreateQueue(ql, 'l', size);
-
-    //Even if there's a big ass number the same thing but with printf's will be 3 times slower. conclusion: Enqueue is fucking faster then printf
-    for(int i = 0; i < ilep; i++) {
-        Enqueue(&qi, i);
-        Enqueue(&qf, i);
-        Enqueue(&qc, 'q');
-        Enqueue(&qd, i);
-        Enqueue(&ql, i);
-    }
-
-    PrintQueue(&qi, 3);
-    PrintQueue(&qf, 3);
-    PrintQueue(&qc, 3);
-    PrintQueue(&qd, 3);
-    PrintQueue(&ql, 3);
-}
-
-void UNITEST_InitSpeed_and_Memeff() {
-
-    int max;
-    printf("Max_Size: ");
-    scanf("%d", &max);
-
-    char type;
-    printf("Type: ");
-    scanf(" %c", &type);
-
-    Queue q;
-
-    q.Front = 0;
-    q.Back = 0;
-    q.Max_Size = max;
-    q.Type = type;
-
-    if (q.Type == 'i') {
-        q.Data = malloc(sizeof(int) * q.Max_Size);
-    }
-    else if(q.Type == 'f') {
-        q.Data = malloc(sizeof(float) * q.Max_Size);
-    }
-    else if(q.Type == 'c') {
-        q.Data = malloc(sizeof(char) * q.Max_Size);
-    }
-    else if(q.Type == 'd') {
-        q.Data = malloc(sizeof(double) * q.Max_Size);
-    }
-    else if(q.Type == 'l') {
-        q.Data = malloc(sizeof(long) * q.Max_Size);
-    }
-
-    char qwe;
-    scanf(" %c", &qwe);
-}
-
-void UNITEST_DequeueSpeed_and_Memeff() {
-
-    int max;
-    printf("Max_Size: ");
-    scanf("%d", &max);
-
-    char type;
-    printf("Type: ");
-    scanf(" %c", &type);
-
-    Queue q;
-
-    q.Front = 0;
-    q.Back = 0;
-    q.Max_Size = max;
-    q.Type = type;
-
-    if (q.Type == 'i') {
-        q.Data = malloc(sizeof(int) * q.Max_Size);
-    }
-    else if(q.Type == 'f') {
-        q.Data = malloc(sizeof(float) * q.Max_Size);
-    }
-    else if(q.Type == 'c') {
-        q.Data = malloc(sizeof(char) * q.Max_Size);
-    }
-    else if(q.Type == 'd') {
-        q.Data = malloc(sizeof(double) * q.Max_Size);
-    }
-    else if(q.Type == 'l') {
-        q.Data = malloc(sizeof(long) * q.Max_Size);
-    }
-
-    char qwe;
-    scanf(" %c", &qwe);
-
-    memset(q.Data, 1, sizeof(int));
-
-    scanf(" %c", &qwe);
-
-    for(int i = 0; i < max; i++) {
-        Dequeue(&q);
-    }
-
-    scanf(" %c", &qwe);
-}
-
-void UNITEST_DeletQueue_MemEff() {
-    int max;
-    printf("Max_Size: ");
-    scanf("%d", &max);
-
-    char type;
-    printf("Type: ");
-    scanf(" %c", &type);
-
-    Queue q;
-
-    q.Front = 0;
-    q.Back = 0;
-    q.Max_Size = max;
-    q.Type = type;
-
-    if (q.Type == 'i') {
-        q.Data = malloc(sizeof(int) * q.Max_Size);
-    }
-    else if(q.Type == 'f') {
-        q.Data = malloc(sizeof(float) * q.Max_Size);
-    }
-    else if(q.Type == 'c') {
-        q.Data = malloc(sizeof(char) * q.Max_Size);
-    }
-    else if(q.Type == 'd') {
-        q.Data = malloc(sizeof(double) * q.Max_Size);
-    }
-    else if(q.Type == 'l') {
-        q.Data = malloc(sizeof(long) * q.Max_Size);
-    }
-
-    char qwe;
-    scanf(" %c", &qwe);
-
-    DeleteQueue(&q);
-
-    scanf(" %c", &qwe);
-}
-
 int main() {
-    CreateQueue(q, 'i', 4);
+    CreateQueue(q, 'i', 5);
 
     Enqueue(&q, 1);
     Enqueue(&q, 2);
