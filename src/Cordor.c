@@ -4,15 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-//zmień type na size_t
-
 typedef struct {
     int Max_Size;
     int Size;
     size_t Type;
-    int Front;
-    int Back;
     void** Data;
 } Queue;
 
@@ -28,8 +23,6 @@ void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
                   In_Type == 'l' ? sizeof(long) : 0;
 
     queue->Max_Size = Input_Max_Size;
-    queue->Front = 0;
-    queue->Back = 0;
     queue->Size = 0;
 
     queue->Data = malloc(queue->Type * queue->Size);
@@ -65,34 +58,28 @@ void Without_Macro_Enqueue(Queue* queue, void* value) {
     if(IsFull(queue) == false || queue->Max_Size < 1) {
         queue->Size++;
 
+        queue->Data = realloc(queue->Data, queue->Type * queue->Size);
+
         if(queue->Type == sizeof(int)) {
-            queue->Data = realloc(queue->Data, sizeof(int) * queue->Size);
-            ((int*)queue->Data)[queue->Back] = *(int*)value;
+            ((int*)queue->Data)[queue->Size - 1] = *(int*)value;
         }
         else if(queue->Type == sizeof(float)) {
-            queue->Data = realloc(queue->Data, sizeof(float) * queue->Size);
-            ((float*)queue->Data)[queue->Back] = *(float*)value;
+            ((float*)queue->Data)[queue->Size - 1] = *(float*)value;
         }
         else if(queue->Type == sizeof(char)) {
-            queue->Data = realloc(queue->Data, sizeof(char) * queue->Size);
-            ((char*)queue->Data)[queue->Back] = *(char*)value;
+            ((char*)queue->Data)[queue->Size - 1] = *(char*)value;
         }
         else if(queue->Type == sizeof(double)) {
-            queue->Data = realloc(queue->Data, sizeof(double) * queue->Size);
-            ((double*)queue->Data)[queue->Back] = *(double*)value;
+            ((double*)queue->Data)[queue->Size - 1] = *(double*)value;
         }
         else if(queue->Type == sizeof(long)) {
-            queue->Data = realloc(queue->Data, sizeof(long) * queue->Size);
-            ((long*)queue->Data)[queue->Back] = *(long*)value;
+            ((long*)queue->Data)[queue->Size - 1] = *(long*)value;
         }
-
-        queue->Back++;
     }
 }
 
 void Dequeue(Queue* queue) {
     if (IsEmpty(queue) == false) {
-        queue->Back--;
         queue->Size--;
 
         memmove(queue->Data, (char *)queue->Data + queue->Type, queue->Type * (queue->Size));
@@ -113,33 +100,31 @@ void Dequeue(Queue* queue) {
 void* Without_Macro_Peek(Queue* queue) {
     if (IsEmpty(queue) == false) {
         if(queue->Type == sizeof(int)) {
-            return ((int *)queue->Data + queue->Front);
+            return ((int *)queue->Data + 0);
         }
         else if(queue->Type == sizeof(float)) {
-            return ((float *)queue->Data + queue->Front);
+            return ((float *)queue->Data + 0);
         }
         else if(queue->Type == sizeof(char)) {
-            return ((char *)queue->Data + queue->Front);
+            return ((char *)queue->Data + 0);
         }
         else if(queue->Type == sizeof(double)) {
-            return ((double *)queue->Data + queue->Front);
+            return ((double *)queue->Data + 0);
         }
         else if(queue->Type == sizeof(long)) {
-            return ((long *)queue->Data + queue->Front);
+            return ((long *)queue->Data + 0);
         }
     }
     return NULL;
 }
 
 void CleanQueue(Queue* queue) {
-    queue->Front = 0;
-    queue->Back = 0;
     queue->Size = 0;
     free(queue->Data);
 }
 
-int QueueCount(Queue* queue) {
-    return queue->Size;
+int CountQueue(Queue* queue) {
+    return queue->Size + 1;
 }
 
 void DeleteQueue(Queue* queue) {
@@ -148,7 +133,7 @@ void DeleteQueue(Queue* queue) {
 
 void PrintQueue(Queue* queue, int Mode) {
     if(IsEmpty(queue) == false) {
-        for(int i = queue->Front; i < queue->Back; i++) {
+        for(int i = 0; i < queue->Size; i++) {
             if(queue->Type == sizeof(int)) {
                 printf("%d", ((int *)queue->Data)[i]);
             }
@@ -182,7 +167,7 @@ void PrintQueue(Queue* queue, int Mode) {
 }
 
 int main() {
-    CreateQueue(q, 'i', 0);
+    CreateQueue(q, 'i', 100);
 
     for(int i = 1; i <= 100; i++) {
         Enqueue(&q, i);
@@ -192,7 +177,7 @@ int main() {
 
     printf("\n");
 
-    printf("%d\n\n", (int)Peek(&q));
+    printf("Peek: %d\n\n", (int)Peek(&q));
 
     Dequeue(&q);
 
@@ -200,7 +185,9 @@ int main() {
 
     printf("\n");
 
-    printf("%d\n\n", (int)Peek(&q));
+    printf("Peek: %d\n\n", (int)Peek(&q));
+
+    printf("Size: %d\n\n", CountQueue(&q));
 
     CleanQueue(&q);
 
