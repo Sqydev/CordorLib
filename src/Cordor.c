@@ -4,10 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+//zmień type na size_t
+
 typedef struct {
     int Max_Size;
     int Size;
-    char Type;
+    size_t Type;
     int Front;
     int Back;
     void** Data;
@@ -18,27 +21,18 @@ typedef struct {
     InitQueue(&name, In_Type, In_Max_Size)
 
 void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
+    queue->Type = In_Type == 'i' ? sizeof(int) :
+                  In_Type == 'f' ? sizeof(float) :
+                  In_Type == 'c' ? sizeof(char) :
+                  In_Type == 'd' ? sizeof(double) :
+                  In_Type == 'l' ? sizeof(long) : 0;
+
+    queue->Max_Size = Input_Max_Size;
     queue->Front = 0;
     queue->Back = 0;
-    queue->Max_Size = Input_Max_Size;
     queue->Size = 0;
-    queue->Type = In_Type;
 
-    if (queue->Type == 'i') {
-        queue->Data = malloc(sizeof(int) * queue->Size);
-    }
-    else if(queue->Type == 'f') {
-        queue->Data = malloc(sizeof(float) * queue->Size);
-    }
-    else if(queue->Type == 'c') {
-        queue->Data = malloc(sizeof(char) * queue->Size);
-    }
-    else if(queue->Type == 'd') {
-        queue->Data = malloc(sizeof(double) * queue->Size);
-    }
-    else if(queue->Type == 'l') {
-        queue->Data = malloc(sizeof(long) * queue->Size);
-    }
+    queue->Data = malloc(queue->Type * queue->Size);
 }
 
 bool IsEmpty(Queue* queue) {
@@ -60,34 +54,34 @@ bool IsFull(Queue* queue) {
 }
 
 #define Enqueue(queue, val) ( \
-    (queue)->Type == 'i' ? Without_Macro_Enqueue(queue, &(int){val}) : \
-    (queue)->Type == 'f' ? Without_Macro_Enqueue(queue, &(float){val}) : \
-    (queue)->Type == 'c' ? Without_Macro_Enqueue(queue, &(char){val}) : \
-    (queue)->Type == 'd' ? Without_Macro_Enqueue(queue, &(double){val}) : \
-    (queue)->Type == 'l' ? Without_Macro_Enqueue(queue, &(long){val}) : 0 \
+    (queue)->Type == sizeof(int) ? Without_Macro_Enqueue(queue, &(int){val}) : \
+    (queue)->Type == sizeof(float) ? Without_Macro_Enqueue(queue, &(float){val}) : \
+    (queue)->Type == sizeof(char) ? Without_Macro_Enqueue(queue, &(char){val}) : \
+    (queue)->Type == sizeof(double) ? Without_Macro_Enqueue(queue, &(double){val}) : \
+    (queue)->Type == sizeof(long) ? Without_Macro_Enqueue(queue, &(long){val}) : 0 \
     )
 
 void Without_Macro_Enqueue(Queue* queue, void* value) {
     if(IsFull(queue) == false || queue->Max_Size < 1) {
         queue->Size++;
 
-        if(queue->Type == 'i') {
+        if(queue->Type == sizeof(int)) {
             queue->Data = realloc(queue->Data, sizeof(int) * queue->Size);
             ((int*)queue->Data)[queue->Back] = *(int*)value;
         }
-        else if(queue->Type == 'f') {
+        else if(queue->Type == sizeof(float)) {
             queue->Data = realloc(queue->Data, sizeof(float) * queue->Size);
             ((float*)queue->Data)[queue->Back] = *(float*)value;
         }
-        else if(queue->Type == 'c') {
+        else if(queue->Type == sizeof(char)) {
             queue->Data = realloc(queue->Data, sizeof(char) * queue->Size);
             ((char*)queue->Data)[queue->Back] = *(char*)value;
         }
-        else if(queue->Type == 'd') {
+        else if(queue->Type == sizeof(double)) {
             queue->Data = realloc(queue->Data, sizeof(double) * queue->Size);
             ((double*)queue->Data)[queue->Back] = *(double*)value;
         }
-        else if(queue->Type == 'l') {
+        else if(queue->Type == sizeof(long)) {
             queue->Data = realloc(queue->Data, sizeof(long) * queue->Size);
             ((long*)queue->Data)[queue->Back] = *(long*)value;
         }
@@ -98,45 +92,39 @@ void Without_Macro_Enqueue(Queue* queue, void* value) {
 
 void Dequeue(Queue* queue) {
     if (IsEmpty(queue) == false) {
-        size_t elem_size = queue->Type == 'i' ? sizeof(int) :
-                        queue->Type == 'f' ? sizeof(float) :
-                        queue->Type == 'c' ? sizeof(char) :
-                        queue->Type == 'd' ? sizeof(double) :
-                        queue->Type == 'l' ? sizeof(long) : 0;
-
         queue->Back--;
         queue->Size--;
 
-        memmove(queue->Data, (char *)queue->Data + elem_size, elem_size * (queue->Size));
+        memmove(queue->Data, (char *)queue->Data + queue->Type, queue->Type * (queue->Size));
 
-        queue->Data = realloc(queue->Data, queue->Size * elem_size);
+        queue->Data = realloc(queue->Data, queue->Size * queue->Type);
     }
 }
 
 
 #define Peek(queue) ( \
-    (queue)->Type == 'i' ? *(int *)Without_Macro_Peek(queue) : \
-    (queue)->Type == 'f' ? *(float *)Without_Macro_Peek(queue) : \
-    (queue)->Type == 'c' ? *(char *)Without_Macro_Peek(queue) : \
-    (queue)->Type == 'd' ? *(double *)Without_Macro_Peek(queue) : \
-    (queue)->Type == 'l' ? *(long *)Without_Macro_Peek(queue) : 0 \
+    (queue)->Type == sizeof(int) ? *(int *)Without_Macro_Peek(queue) : \
+    (queue)->Type == sizeof(float) ? *(float *)Without_Macro_Peek(queue) : \
+    (queue)->Type == sizeof(char) ? *(char *)Without_Macro_Peek(queue) : \
+    (queue)->Type == sizeof(double) ? *(double *)Without_Macro_Peek(queue) : \
+    (queue)->Type == sizeof(long) ? *(long *)Without_Macro_Peek(queue) : 0 \
 )
 
 void* Without_Macro_Peek(Queue* queue) {
     if (IsEmpty(queue) == false) {
-        if(queue->Type == 'i') {
+        if(queue->Type == sizeof(int)) {
             return ((int *)queue->Data + queue->Front);
         }
-        else if(queue->Type == 'f') {
+        else if(queue->Type == sizeof(float)) {
             return ((float *)queue->Data + queue->Front);
         }
-        else if(queue->Type == 'c') {
+        else if(queue->Type == sizeof(char)) {
             return ((char *)queue->Data + queue->Front);
         }
-        else if(queue->Type == 'd') {
+        else if(queue->Type == sizeof(double)) {
             return ((double *)queue->Data + queue->Front);
         }
-        else if(queue->Type == 'l') {
+        else if(queue->Type == sizeof(long)) {
             return ((long *)queue->Data + queue->Front);
         }
     }
@@ -161,19 +149,19 @@ void DeleteQueue(Queue* queue) {
 void PrintQueue(Queue* queue, int Mode) {
     if(IsEmpty(queue) == false) {
         for(int i = queue->Front; i < queue->Back; i++) {
-            if(queue->Type == 'i') {
+            if(queue->Type == sizeof(int)) {
                 printf("%d", ((int *)queue->Data)[i]);
             }
-            else if(queue->Type == 'f') {
+            else if(queue->Type == sizeof(float)) {
                 printf("%f", ((float *)queue->Data)[i]);
             }
-            else if(queue->Type == 'c') {
+            else if(queue->Type == sizeof(char)) {
                 printf("%c", ((char *)queue->Data)[i]);
             }
-            else if(queue->Type == 'd') {
+            else if(queue->Type == sizeof(double)) {
                 printf("%f", ((double *)queue->Data)[i]);
             }
-            else if(queue->Type == 'l') {
+            else if(queue->Type == sizeof(long)) {
                 printf("%ld", ((long *)queue->Data)[i]);
             }
 
