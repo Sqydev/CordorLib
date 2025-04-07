@@ -30,19 +30,16 @@
 - [🔗 Important links](#-important-links)
 - [🎗 License](#-license)
 
----
 
 ## 📍 Overview
 
-<code>- CordorLib is hiper easy to use & hiper memory efficient queue library for Clang</code>
+<code> CordorLib is hiper easy to use & hiper memory efficient queue library for Clang</code>
 
----
 
 ## 👾 Features
 
-<code>- It has everything you need in queue library</code>
+<code> It has everything you need in queue library</code>
 
----
 
 ## 📁 Project Structure
 
@@ -57,7 +54,6 @@
         └── Cordor.c
 ```
 
----
 
 ## 🚀 Getting Started
 
@@ -104,7 +100,6 @@
 Yust like, read the documentation, it's not that long(It's not out couse there will be big chainges and I don't want to rewrite It every update):
 - [Documentation](https://google.com)
 
----
 
 ## 📌 Project Roadmap
 
@@ -113,7 +108,6 @@ Yust like, read the documentation, it's not that long(It's not out couse there w
 - [ ] **`Task 3`**: Improvements.
 - [ ] **`Task 4`**: Official Release.
 
----
 
 ## 🔗 Important links
 
@@ -121,7 +115,6 @@ Yust like, read the documentation, it's not that long(It's not out couse there w
 - somethingi
 - somethingi
 
----
 
 ## 🎗 License
 
