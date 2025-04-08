@@ -12,17 +12,33 @@ typedef struct {
     void** Data;
 } Queue;
 
-#define CreateQueue(name, In_Type, In_Max_Size) \
+#define CreateIntQueue(name, In_Max_Size) \
     Queue name; \
-    InitQueue(&name, In_Type, In_Max_Size)
+    InitQueue(&name, 0, In_Max_Size)
 
-void InitQueue(Queue* queue, char In_Type, int Input_Max_Size) {
+#define CreateFloatQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 1, In_Max_Size)
+
+#define CreateCharQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 2, In_Max_Size)
+
+#define CreateDoubleQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 3, In_Max_Size)
+
+#define CreateLongQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 4, In_Max_Size)
+
+void InitQueue(Queue* queue, int In_Type, int Input_Max_Size) {
     queue->Type = malloc(sizeof(size_t));
-    *queue->Type = In_Type == 'i' ? sizeof(int) :
-                  In_Type == 'f' ? sizeof(float) :
-                  In_Type == 'c' ? sizeof(char) :
-                  In_Type == 'd' ? sizeof(double) :
-                  In_Type == 'l' ? sizeof(long) : 0;
+    *queue->Type = In_Type == 0 ? sizeof(int) :
+                  In_Type == 1 ? sizeof(float) :
+                  In_Type == 2 ? sizeof(char) :
+                  In_Type == 3 ? sizeof(double) :
+                  In_Type == 4 ? sizeof(long) : 0;
 
     queue->Max_Size = malloc(sizeof(int));
     *queue->Max_Size = Input_Max_Size;
@@ -175,7 +191,7 @@ void PrintQueue(Queue* queue, int Mode) {
 }
 
 int main() {
-    CreateQueue(q, 'i', 100);
+    CreateIntQueue(q, 100);
 
     for(int i = 1; i <= 100; i++) {
         Enqueue(&q, i);
@@ -238,7 +254,7 @@ int main() {
 
     //PrintQueue(&q, 3);
 
-    CreateQueue(y, 'i', 0);
+    CreateIntQueue(y, 0);
 
     PrintQueue(&y, 3);
 
