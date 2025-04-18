@@ -13,7 +13,10 @@ typedef struct {
 } EffQueue;
 
 typedef struct {
-
+    int Max_Size;
+    int Size;
+    size_t Type;
+    void** Data;
 } Queue;
 
 //Effi
@@ -38,51 +41,27 @@ typedef struct {
     InitEffQueue(&name, 4, In_Max_Size)
 
 
-//Fast
-#define CreateFastIntQueue(name, In_Max_Size) \
-    typedef struct { \
-        int Max_Size; \
-        int Size; \
-        int iData[In_Max_Size]; \
-    } FastQueue; \
-    FastQueue name; \
-    InitFastQueue(&name, 0, In_Max_Size)
+//Normal
+#define CreateIntQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 1, In_Max_Size)
 
-#define CreateFastFloatQueue(name, In_Max_Size) \
-    typedef struct { \
-        int Max_Size; \
-        int Size; \
-        float fData[In_Max_Size]; \
-    } FastQueue; \
-    FastQueue name; \
-    InitFastQueue(&name, 1, In_Max_Size)
+#define CreateFloatQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 1, In_Max_Size)
 
-#define CreateFastCharQueue(name, In_Max_Size) \
-    typedef struct { \
-        int Max_Size; \
-        int Size; \
-        char cData[In_Max_Size]; \
-    } FastQueue; \
-    FastQueue name; \
-    InitFastQueue(&name, 2, In_Max_Size)
+#define CreateCharQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 2, In_Max_Size)
 
-#define CreateFastDoubleQueue(name, In_Max_Size) \
-    typedef struct { \
-        int Max_Size; \
-        int Size; \
-        double dData[In_Max_Size]; \
-    } FastQueue; \
-    FastQueue name; \
-    InitFastQueue(&name, 3, In_Max_Size)
+#define CreateDoubleQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 3, In_Max_Size)
 
-#define CreateFastLongQueue(name, In_Max_Size) \
-    typedef struct { \
-        int Max_Size; \
-        int Size; \
-        long lData[In_Max_Size]; \
-    } FastQueue; \
-    FastQueue name; \
-    InitFastQueue(&name, 4, In_Max_Size)
+#define CreateLongQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 4, In_Max_Size)
+
 
 
 void InitEffQueue(EffQueue* queue, int In_Type, int Input_Max_Size) {
@@ -102,15 +81,21 @@ void InitEffQueue(EffQueue* queue, int In_Type, int Input_Max_Size) {
     queue->Data = malloc(*queue->Type * *queue->Size);
 }
 
-void InitQueue() {
+void InitQueue(Queue* queue, int In_Type, int Input_Max_Size) {
+    queue->Type = In_Type == 0 ? sizeof(int) :
+                  In_Type == 1 ? sizeof(float) :
+                  In_Type == 2 ? sizeof(char) :
+                  In_Type == 3 ? sizeof(double) :
+                  In_Type == 4 ? sizeof(long) : 0;
 
+    queue->Size = 0;
+
+    queue->Max_Size = Input_Max_Size;
+
+    queue->Data = malloc(queue->Type * queue->Size);
 }
 
-void InitFastQueue(FastQueue* queue, int In_Type, int Input_Max_Size) {
-
-}
-
-bool IsEmpty(EffQueue* queue) {
+bool EffIsEmpty(EffQueue* queue) {
     if(*queue->Size == 0) {
         return true;
     }
@@ -119,7 +104,16 @@ bool IsEmpty(EffQueue* queue) {
     }
 }
 
-bool IsFull(EffQueue* queue) {
+bool IsEmpty(Queue* queue) {
+    if(queue->Size == 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool EffIsFull(EffQueue* queue) {
     if(*queue->Size == *queue->Max_Size) {
         return true;
     }
@@ -128,16 +122,33 @@ bool IsFull(EffQueue* queue) {
     }
 }
 
-#define Enqueue(queue, val) ( \
-    *(queue)->Type == sizeof(int) ? Advanced_Enqueue(queue, &(int){val}) : \
-    *(queue)->Type == sizeof(float) ? Advanced_Enqueue(queue, &(float){val}) : \
-    *(queue)->Type == sizeof(char) ? Advanced_Enqueue(queue, &(char){val}) : \
-    *(queue)->Type == sizeof(double) ? Advanced_Enqueue(queue, &(double){val}) : \
-    *(queue)->Type == sizeof(long) ? Advanced_Enqueue(queue, &(long){val}) : 0 \
+bool IsFull(Queue* queue) {
+    if(queue->Size == queue->Max_Size) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+#define EffEnqueue(queue, val) ( \
+    *(queue)->Type == sizeof(int) ? Eff_Advanced_Enqueue(queue, &(int){val}) : \
+    *(queue)->Type == sizeof(float) ? Eff_Advanced_Enqueue(queue, &(float){val}) : \
+    *(queue)->Type == sizeof(char) ? Eff_Advanced_Enqueue(queue, &(char){val}) : \
+    *(queue)->Type == sizeof(double) ? Eff_Advanced_Enqueue(queue, &(double){val}) : \
+    *(queue)->Type == sizeof(long) ? Eff_Advanced_Enqueue(queue, &(long){val}) : 0 \
     )
 
-void Advanced_Enqueue(EffQueue* queue, void* value) {
-    if(IsFull(queue) == false || *queue->Max_Size < 1) {
+#define Enqueue(queue, val) ( \
+    queue->Type == sizeof(int) ? Advanced_Enqueue(queue, &(int){val}) : \
+    queue->Type == sizeof(float) ? Advanced_Enqueue(queue, &(float){val}) : \
+    queue->Type == sizeof(char) ? Advanced_Enqueue(queue, &(char){val}) : \
+    queue->Type == sizeof(double) ? Advanced_Enqueue(queue, &(double){val}) : \
+    queue->Type == sizeof(long) ? Advanced_Enqueue(queue, &(long){val}) : 0 \
+    )
+
+void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
+    if(EffIsFull(queue) == false || *queue->Max_Size < 1) {
         *queue->Size = *queue->Size + 1;
 
         queue->Data = realloc(queue->Data, *queue->Type * *queue->Size);
