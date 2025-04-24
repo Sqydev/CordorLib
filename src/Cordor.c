@@ -171,8 +171,33 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
     }
 }
 
-void Dequeue(EffQueue* queue) {
-    if (IsEmpty(queue) == false) {
+
+void Advanced_Enqueue(Queue* queue, void* value) {
+    if(IsFull(queue) == false || queue->Max_Size < 1) {
+        queue->Size = queue->Size + 1;
+
+        queue->Data = realloc(queue->Data, queue->Type * queue->Size);
+
+        if(queue->Type == sizeof(int)) {
+            ((int*)queue->Data)[queue->Size - 1] = *(int*)value;
+        }
+        else if(queue->Type == sizeof(float)) {
+            ((float*)queue->Data)[queue->Size - 1] = *(float*)value;
+        }
+        else if(queue->Type == sizeof(char)) {
+            ((char*)queue->Data)[queue->Size - 1] = *(char*)value;
+        }
+        else if(queue->Type == sizeof(double)) {
+            ((double*)queue->Data)[queue->Size - 1] = *(double*)value;
+        }
+        else if(queue->Type == sizeof(long)) {
+            ((long*)queue->Data)[queue->Size - 1] = *(long*)value;
+        }
+    }
+}
+
+void EffDequeue(EffQueue* queue) {
+    if (EffIsEmpty(queue) == false) {
         *queue->Size = *queue->Size - 1;
 
         memmove(queue->Data, (char *)queue->Data + *queue->Type, *queue->Type * (*queue->Size));
@@ -181,6 +206,22 @@ void Dequeue(EffQueue* queue) {
     }
 }
 
+void Dequeue(Queue* queue) {
+    if (IsEmpty(queue) == false) {
+        queue->Size = queue->Size - 1;
+
+		printf("Zrób dequeue");
+
+    }
+}
+
+#define EffPeek(queue) ( \
+    *(queue)->Type == sizeof(int) ? *(int *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(float) ? *(float *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(char) ? *(char *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(double) ? *(double *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(long) ? *(long *)Eff_Advanced_Peek(queue) : 0 \
+    )
 
 #define Peek(queue) ( \
     *(queue)->Type == sizeof(int) ? *(int *)Advanced_Peek(queue) : \
@@ -190,8 +231,8 @@ void Dequeue(EffQueue* queue) {
     *(queue)->Type == sizeof(long) ? *(long *)Advanced_Peek(queue) : 0 \
     )
 
-void* Advanced_Peek(EffQueue* queue) {
-    if (IsEmpty(queue) == false) {
+void* Eff_Advanced_Peek(EffQueue* queue) {
+    if (EffIsEmpty(queue) == false) {
         if(*queue->Type == sizeof(int)) {
             return ((int *)queue->Data + 0);
         }
@@ -211,24 +252,58 @@ void* Advanced_Peek(EffQueue* queue) {
     return NULL;
 }
 
-int CountQueue(EffQueue* queue) {
+void* Advanced_Peek(Queue* queue) {
+    if (IsEmpty(queue) == false) {
+        if(queue->Type == sizeof(int)) {
+            return ((int *)queue->Data + 0);
+        }
+        else if(queue->Type == sizeof(float)) {
+            return ((float *)queue->Data + 0);
+        }
+        else if(queue->Type == sizeof(char)) {
+            return ((char *)queue->Data + 0);
+        }
+        else if(queue->Type == sizeof(double)) {
+            return ((double *)queue->Data + 0);
+        }
+        else if(queue->Type == sizeof(long)) {
+            return ((long *)queue->Data + 0);
+        }
+    }
+    return NULL;
+}
+
+int EffCountQueue(EffQueue* queue) {
     return *queue->Size;
 }
 
-void CleanQueue(EffQueue* queue) {
+int CountQueue(Queue* queue) {
+    return queue->Size;
+}
+
+void EffCleanQueue(EffQueue* queue) {
     *queue->Size = 0;
     queue->Data = realloc(queue->Data, *queue->Size * *queue->Type);
 }
 
-void DeleteQueue(EffQueue* queue) {
+void CleanQueue(Queue* queue) {
+    queue->Size = 0;
+    queue->Data = realloc(queue->Data, queue->Size * queue->Type);
+}
+
+void EffDeleteQueue(EffQueue* queue) {
     free(queue->Max_Size);
     free(queue->Size);
     free(queue->Type);
     free(queue->Data);
 }
 
-void PrintQueue(EffQueue* queue, int Mode) {
-    if(IsEmpty(queue) == false) {
+void DeleteQueue(Queue* queue) {
+    free(queue->Data);
+}
+
+void EffPrintQueue(EffQueue* queue, int Mode) {
+    if(EffIsEmpty(queue) == false) {
         for(int i = 0; i < *queue->Size; i++) {
             if(*queue->Type == sizeof(int)) {
                 printf("%d", ((int *)queue->Data)[i]);
@@ -262,8 +337,112 @@ void PrintQueue(EffQueue* queue, int Mode) {
     }
 }
 
-int main() {
+void PrintQueue(Queue* queue, int Mode) {
+    if(IsEmpty(queue) == false) {
+        for(int i = 0; i < queue->Size; i++) {
+            if(queue->Type == sizeof(int)) {
+                printf("%d", ((int *)queue->Data)[i]);
+            }
+            else if(queue->Type == sizeof(float)) {
+                printf("%f", ((float *)queue->Data)[i]);
+            }
+            else if(queue->Type == sizeof(char)) {
+                printf("%c", ((char *)queue->Data)[i]);
+            }
+            else if(queue->Type == sizeof(double)) {
+                printf("%f", ((double *)queue->Data)[i]);
+            }
+            else if(queue->Type == sizeof(long)) {
+                printf("%ld", ((long *)queue->Data)[i]);
+            }
+
+            if(Mode == 1 || Mode == 3) {
+                printf(" ");
+            }
+            else if(Mode == 2) {
+                printf("\n");
+            }
+        }
+        if(Mode == 3) {
+            printf("\n");
+        }
+    }
+    else {
+        printf("It's empty\n");
+    }
+}
+
+void EffQueueTest() {
     CreateEffIntQueue(q, 100);
+
+    for(int i = 1; i <= 100; i++) {
+        EffEnqueue(&q, i);
+    }
+
+    printf("After Enqueue: ");
+    EffPrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("Peek: %d\n\n", (int)EffPeek(&q));
+
+    printf("Size: %d\n\n", EffCountQueue(&q));
+
+    EffDequeue(&q);
+
+    printf("After Dequeue: ");
+    EffPrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("Peek: %d\n\n", (int)EffPeek(&q));
+
+    printf("Size: %d\n\n", EffCountQueue(&q));
+
+    EffCleanQueue(&q);
+
+    printf("After Clean: ");
+    EffPrintQueue(&q, 3);
+
+    printf("\n");
+
+    for(int i = 1; i <= 100; i++) {
+        EffEnqueue(&q, i);
+    }
+
+    printf("After EnqueueClean: ");
+    EffPrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("Peek: %d\n\n", (int)EffPeek(&q));
+
+    printf("Size: %d\n\n", EffCountQueue(&q));
+
+    printf("After DequeueClean: ");
+    EffDequeue(&q);
+
+    EffPrintQueue(&q, 3);
+
+    printf("\n");
+
+    printf("Peek: %d\n\n", (int)EffPeek(&q));
+
+    printf("Size: %d\n\n", EffCountQueue(&q));
+
+    EffDeleteQueue(&q);
+
+    //Should give error
+
+    //EffPrintQueue(&q, 3);
+
+    CreateEffIntQueue(y, 0);
+
+    EffPrintQueue(&y, 3);
+}
+
+void QueueTest() {
+    CreateIntQueue(q, 100);
 
     for(int i = 1; i <= 100; i++) {
         Enqueue(&q, i);
@@ -331,4 +510,8 @@ int main() {
     PrintQueue(&y, 3);
 
     return 0;
+}
+
+int main() {
+	QueueTest();
 }
