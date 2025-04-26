@@ -15,6 +15,7 @@ typedef struct {
 typedef struct {
     int Max_Size;
     int Size;
+	int Front;
     size_t Type;
     void** Data;
 } Queue;
@@ -90,9 +91,11 @@ void InitQueue(Queue* queue, int In_Type, int Input_Max_Size) {
 
     queue->Size = 0;
 
+	queue->Front = 0;
+
     queue->Max_Size = Input_Max_Size;
 
-    queue->Data = malloc(queue->Type * queue->Size);
+    queue->Data = malloc(queue->Type * queue->Max_Size);
 }
 
 bool EffIsEmpty(EffQueue* queue) {
@@ -140,11 +143,11 @@ bool IsFull(Queue* queue) {
     )
 
 #define Enqueue(queue, val) ( \
-    queue->Type == sizeof(int) ? Advanced_Enqueue(queue, &(int){val}) : \
-    queue->Type == sizeof(float) ? Advanced_Enqueue(queue, &(float){val}) : \
-    queue->Type == sizeof(char) ? Advanced_Enqueue(queue, &(char){val}) : \
-    queue->Type == sizeof(double) ? Advanced_Enqueue(queue, &(double){val}) : \
-    queue->Type == sizeof(long) ? Advanced_Enqueue(queue, &(long){val}) : 0 \
+    (queue)->Type == sizeof(int) ? Advanced_Enqueue(queue, &(int){val}) : \
+    (queue)->Type == sizeof(float) ? Advanced_Enqueue(queue, &(float){val}) : \
+    (queue)->Type == sizeof(char) ? Advanced_Enqueue(queue, &(char){val}) : \
+    (queue)->Type == sizeof(double) ? Advanced_Enqueue(queue, &(double){val}) : \
+    (queue)->Type == sizeof(long) ? Advanced_Enqueue(queue, &(long){val}) : 0 \
     )
 
 void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
@@ -175,8 +178,6 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 void Advanced_Enqueue(Queue* queue, void* value) {
     if(IsFull(queue) == false || queue->Max_Size < 1) {
         queue->Size = queue->Size + 1;
-
-        queue->Data = realloc(queue->Data, queue->Type * queue->Size);
 
         if(queue->Type == sizeof(int)) {
             ((int*)queue->Data)[queue->Size - 1] = *(int*)value;
@@ -211,8 +212,7 @@ void Dequeue(Queue* queue) {
         queue->Size = queue->Size - 1;
 
 		printf("Zrób dequeue");
-
-    }
+	}
 }
 
 #define EffPeek(queue) ( \
@@ -224,11 +224,11 @@ void Dequeue(Queue* queue) {
     )
 
 #define Peek(queue) ( \
-    *(queue)->Type == sizeof(int) ? *(int *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(float) ? *(float *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(char) ? *(char *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(double) ? *(double *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(long) ? *(long *)Advanced_Peek(queue) : 0 \
+    (queue)->Type == sizeof(int) ? *(int *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(float) ? *(float *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(char) ? *(char *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(double) ? *(double *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(long) ? *(long *)Advanced_Peek(queue) : 0 \
     )
 
 void* Eff_Advanced_Peek(EffQueue* queue) {
@@ -505,13 +505,11 @@ void QueueTest() {
 
     //PrintQueue(&q, 3);
 
-    CreateEffIntQueue(y, 0);
+    CreateIntQueue(y, 0);
 
     PrintQueue(&y, 3);
-
-    return 0;
 }
 
 int main() {
-	QueueTest();
+	EffQueueTest();
 }
