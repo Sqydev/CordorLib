@@ -173,12 +173,11 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 
 
 void Advanced_Enqueue(Queue* queue, void* value) {
-	//zrób jeszcze dla nieskończonych
+	//sprawdz jeszcze dla nieskończonych
 	if(IsFull(queue) == false || queue->Max_Size < 1) {
     	printf("Zrób Enqueue");
 		
 		if(queue->Type == sizeof(int)) {
-			//Działa?
             ((int*)queue->Data)[queue->Size] = *(int*)value;
 		}
 		else if(queue->Type == sizeof(float)) {
@@ -194,7 +193,6 @@ void Advanced_Enqueue(Queue* queue, void* value) {
             ((long*)queue->Data)[queue->Size] = *(long*)value;
         }
 		
-		//działa !!!
 		queue->Size = queue->Size + 1;
 	}
 }
@@ -290,7 +288,7 @@ void EffCleanQueue(EffQueue* queue) {
 
 void CleanQueue(Queue* queue) {
     queue->Size = 0;
-    queue->Data = realloc(queue->Data, queue->Size * queue->Type);
+    queue->Data = realloc(queue->Data, queue->Max_Size * queue->Type);
 }
 
 void EffDeleteQueue(EffQueue* queue) {
@@ -301,7 +299,7 @@ void EffDeleteQueue(EffQueue* queue) {
 }
 
 void DeleteQueue(Queue* queue) {
-    free(queue->Data);
+	free(queue->Data);
 }
 
 void EffPrintQueue(EffQueue* queue, int Mode) {
@@ -447,7 +445,7 @@ void QueueTest() {
     CreateIntQueue(q, 100);
 
     for(int i = 1; i <= 100; i++) {
-        Enqueue(&q, 1);
+        Enqueue(&q, i);
 	}
 
     printf("After Enqueue: ");
@@ -513,9 +511,7 @@ void QueueTest() {
 }
 
 int main() {
-	CreateIntQueue(q, 100);
-
-	Enqueue(&q, 1);	
+	QueueTest();
 
 	return 0;
 }
