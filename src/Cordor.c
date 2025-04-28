@@ -23,7 +23,7 @@ typedef struct {
 //Effi
 #define CreateEffIntQueue(name, In_Max_Size) \
     EffQueue name; \
-    InitEffQueue(&name, 1, In_Max_Size)
+    InitEffQueue(&name, 0, In_Max_Size)
 
 #define CreateEffFloatQueue(name, In_Max_Size) \
     EffQueue name; \
@@ -45,7 +45,7 @@ typedef struct {
 //Normal
 #define CreateIntQueue(name, In_Max_Size) \
     Queue name; \
-    InitQueue(&name, 1, In_Max_Size)
+    InitQueue(&name, 0, In_Max_Size)
 
 #define CreateFloatQueue(name, In_Max_Size) \
     Queue name; \
@@ -176,25 +176,13 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 
 
 void Advanced_Enqueue(Queue* queue, void* value) {
-    if(IsFull(queue) == false || queue->Max_Size < 1) {
-        queue->Size = queue->Size + 1;
-
-        if(queue->Type == sizeof(int)) {
-            ((int*)queue->Data)[queue->Size - 1] = *(int*)value;
-        }
-        else if(queue->Type == sizeof(float)) {
-            ((float*)queue->Data)[queue->Size - 1] = *(float*)value;
-        }
-        else if(queue->Type == sizeof(char)) {
-            ((char*)queue->Data)[queue->Size - 1] = *(char*)value;
-        }
-        else if(queue->Type == sizeof(double)) {
-            ((double*)queue->Data)[queue->Size - 1] = *(double*)value;
-        }
-        else if(queue->Type == sizeof(long)) {
-            ((long*)queue->Data)[queue->Size - 1] = *(long*)value;
-        }
-    }
+    //Sprawdz czy to w if po || to to potrzebne czy coś mi nie wyszło
+	if(IsFull(queue) == false || queue->Max_Size < 1) {
+    	printf("Zrób Enqueue");
+		
+		//queue->Front ++;
+		//queue->Size ++;
+	}
 }
 
 void EffDequeue(EffQueue* queue) {
@@ -209,14 +197,13 @@ void EffDequeue(EffQueue* queue) {
 
 void Dequeue(Queue* queue) {
     if (IsEmpty(queue) == false) {
-        queue->Size = queue->Size - 1;
-
 		printf("Zrób dequeue");
 	}
 }
 
 #define EffPeek(queue) ( \
-    *(queue)->Type == sizeof(int) ? *(int *)Eff_Advanced_Peek(queue) : \
+	Eff_Advanced_Peek(queue) == NULL ? 0 : \
+	*(queue)->Type == sizeof(int) ? *(int *)Eff_Advanced_Peek(queue) : \
     *(queue)->Type == sizeof(float) ? *(float *)Eff_Advanced_Peek(queue) : \
     *(queue)->Type == sizeof(char) ? *(char *)Eff_Advanced_Peek(queue) : \
     *(queue)->Type == sizeof(double) ? *(double *)Eff_Advanced_Peek(queue) : \
@@ -224,6 +211,7 @@ void Dequeue(Queue* queue) {
     )
 
 #define Peek(queue) ( \
+	Advanced_Peek(queue) == NULL ? 0 : \
     (queue)->Type == sizeof(int) ? *(int *)Advanced_Peek(queue) : \
     (queue)->Type == sizeof(float) ? *(float *)Advanced_Peek(queue) : \
     (queue)->Type == sizeof(char) ? *(char *)Advanced_Peek(queue) : \
@@ -232,7 +220,7 @@ void Dequeue(Queue* queue) {
     )
 
 void* Eff_Advanced_Peek(EffQueue* queue) {
-    if (EffIsEmpty(queue) == false) {
+    if (!EffIsEmpty(queue)) {
         if(*queue->Type == sizeof(int)) {
             return ((int *)queue->Data + 0);
         }
@@ -253,7 +241,8 @@ void* Eff_Advanced_Peek(EffQueue* queue) {
 }
 
 void* Advanced_Peek(Queue* queue) {
-    if (IsEmpty(queue) == false) {
+	//Nie z tym problem, jednak z tym, jednak null robi ten kod 139
+	if (!IsEmpty(queue)) {
         if(queue->Type == sizeof(int)) {
             return ((int *)queue->Data + 0);
         }
@@ -271,7 +260,7 @@ void* Advanced_Peek(Queue* queue) {
         }
     }
     return NULL;
-}
+} 
 
 int EffCountQueue(EffQueue* queue) {
     return *queue->Size;
@@ -453,7 +442,8 @@ void QueueTest() {
 
     printf("\n");
 
-    printf("Peek: %d\n\n", (int)Peek(&q));
+    //To ni działa
+	printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Size: %d\n\n", CountQueue(&q));
 
@@ -464,7 +454,7 @@ void QueueTest() {
 
     printf("\n");
 
-    printf("Peek: %d\n\n", (int)Peek(&q));
+    //printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Size: %d\n\n", CountQueue(&q));
 
@@ -484,7 +474,7 @@ void QueueTest() {
 
     printf("\n");
 
-    printf("Peek: %d\n\n", (int)Peek(&q));
+    //printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Size: %d\n\n", CountQueue(&q));
 
@@ -495,7 +485,7 @@ void QueueTest() {
 
     printf("\n");
 
-    printf("Peek: %d\n\n", (int)Peek(&q));
+    //printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Size: %d\n\n", CountQueue(&q));
 
@@ -511,5 +501,7 @@ void QueueTest() {
 }
 
 int main() {
-	EffQueueTest();
+	QueueTest();
+
+	return 0;
 }
