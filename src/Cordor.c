@@ -173,17 +173,19 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 
 
 void Advanced_Enqueue(Queue* queue, void* value) {
+	//zrób jeszcze dla nieskończonych
 	if(IsFull(queue) == false || queue->Max_Size < 1) {
     	printf("Zrób Enqueue");
 		
 		if(queue->Type == sizeof(int)) {
+			//Działa?
             ((int*)queue->Data)[queue->Size] = *(int*)value;
-        }
+		}
 		else if(queue->Type == sizeof(float)) {
-			(float*)queue->Data)[queue->Size] = *(float*)value;
+			((float*)queue->Data)[queue->Size] = *(float*)value;
         }
 		else if(queue->Type == sizeof(char)) {
-            (char*)queue->Data)[queue->Size] = *(char*)value;
+            ((char*)queue->Data)[queue->Size] = *(char*)value;
         }
 		else if(queue->Type == sizeof(double)) {
             ((double*)queue->Data)[queue->Size] = *(double*)value;
@@ -191,7 +193,8 @@ void Advanced_Enqueue(Queue* queue, void* value) {
 		else if(queue->Type == sizeof(long)) {
             ((long*)queue->Data)[queue->Size] = *(long*)value;
         }
-	
+		
+		//działa !!!
 		queue->Size = queue->Size + 1;
 	}
 }
@@ -444,15 +447,14 @@ void QueueTest() {
     CreateIntQueue(q, 100);
 
     for(int i = 1; i <= 100; i++) {
-        Enqueue(&q, i);
-    }
+        Enqueue(&q, 1);
+	}
 
     printf("After Enqueue: ");
     PrintQueue(&q, 3);
 
     printf("\n");
 
-    //To ni działa
 	printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Size: %d\n\n", CountQueue(&q));
@@ -476,7 +478,7 @@ void QueueTest() {
     printf("\n");
 
     for(int i = 1; i <= 100; i++) {
-        Enqueue(&q, i);
+        //Enqueue(&q, i);
     }
 
     printf("After EnqueueClean: ");
@@ -511,7 +513,9 @@ void QueueTest() {
 }
 
 int main() {
-	QueueTest();
+	CreateIntQueue(q, 100);
+
+	Enqueue(&q, 1);	
 
 	return 0;
 }
