@@ -176,23 +176,23 @@ void Advanced_Enqueue(Queue* queue, void* value) {
 	if(IsFull(queue) == false || queue->Max_Size < 1) {
     	printf("Zrób Enqueue");
 		
-		queue->Size = queue->Size + 1;
-
 		if(queue->Type == sizeof(int)) {
-            ((int*)queue->Data)[queue->Size - 1] = *(int*)value;
+            ((int*)queue->Data)[queue->Size] = *(int*)value;
         }
 		else if(queue->Type == sizeof(float)) {
-            ((float*)queue->Data)[queue->Size - 1] = *(float*)value;
+			(float*)queue->Data)[queue->Size] = *(float*)value;
         }
 		else if(queue->Type == sizeof(char)) {
-            ((char*)queue->Data)[queue->Size - 1] = *(char*)value;
+            (char*)queue->Data)[queue->Size] = *(char*)value;
         }
 		else if(queue->Type == sizeof(double)) {
-            ((double*)queue->Data)[queue->Size - 1] = *(double*)value;
+            ((double*)queue->Data)[queue->Size] = *(double*)value;
         }
 		else if(queue->Type == sizeof(long)) {
-            ((long*)queue->Data)[queue->Size - 1] = *(long*)value;
+            ((long*)queue->Data)[queue->Size] = *(long*)value;
         }
+	
+		queue->Size = queue->Size + 1;
 	}
 }
 
