@@ -101,7 +101,7 @@ void InitQueue(Queue* queue, int In_Type, int Input_Max_Size) {
 }
 
 bool EffIsEmpty(EffQueue* queue) {
-    if(*queue->Size == 0 && *queue->Max_Size > 0) {
+    if(*queue->Size == 0) {
         return true;
     }
     else {
@@ -110,7 +110,7 @@ bool EffIsEmpty(EffQueue* queue) {
 }
 
 bool IsEmpty(Queue* queue) {
-    if(queue->Size == 0 && queue->Max_Size > 0) {
+    if(queue->Size == 0) {
         return true;
     }
     else {
@@ -136,6 +136,24 @@ bool IsFull(Queue* queue) {
     }
 }
 
+bool EffIsInfinite(EffQueue* queue) {
+	if(*queue->Max_Size < 1) {
+		return true;
+	}
+	else {
+		return false;	
+	}
+}
+
+bool IsInfinite(Queue* queue) {
+	if(queue->Max_Size < 1) {
+		return true;
+	}
+	else {
+		return false;	
+	}
+}
+
 #define EffEnqueue(queue, val) ( \
     *(queue)->Type == sizeof(int) ? Eff_Advanced_Enqueue(queue, &(int){val}) : \
     *(queue)->Type == sizeof(float) ? Eff_Advanced_Enqueue(queue, &(float){val}) : \
@@ -153,7 +171,7 @@ bool IsFull(Queue* queue) {
     )
 
 void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
-    if(EffIsFull(queue) == false) {
+    if(EffIsFull(queue) == false || EffIsInfinite(queue) == true) {
         *queue->Size = *queue->Size + 1;
 
         queue->Data = realloc(queue->Data, *queue->Type * *queue->Size);
@@ -178,7 +196,11 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 
 
 void Advanced_Enqueue(Queue* queue, void* value) {
-	if(IsFull(queue) == false) {
+	if(IsFull(queue) == false || IsInfinite(queue) == true) {
+		if(IsInfinite(queue) == true) {
+        	queue->Data = realloc(queue->Data, queue->Type * (queue->Size + 1));
+		}
+
 		if(queue->Type == sizeof(int)) {
             ((int*)queue->Data)[queue->Size] = *(int*)value;
 		}
@@ -516,33 +538,33 @@ void QueueTest() {
 
 //2 times slower than Normal queue
 void EFF_SPEEDY_TEST() {
-	CreateEffIntQueue(test, 1000000000);
+	CreateEffIntQueue(test, 0);
 	
-	for(int i = 1; i <= 1000000000; i++) {
+	for(int i = 1; i <= 10000; i++) {
 		EffEnqueue(&test, i);
 		//printf("w");
 	};
 	
-	 //PrintQueue(&test, 3);
+	 EffPrintQueue(&test, 3);
 
 }
 
 //As fast as printf
 void SPEEDY_TEST() {
-	CreateIntQueue(test, 1000000000);
+	CreateIntQueue(test, 0);
 	
-	for(int i = 1; i <= 1000000000; i++) {
-		//Enqueue(&test, i);
+	for(int i = 1; i <= 100000000; i++) {
+		Enqueue(&test, i);
 		//printf("w");
 	};
 	
-	 //PrintQueue(&test, 3);
+	 PrintQueue(&test, 3);
 }
 
 int main() {
-	printf("ZRÓB NIESKOŃCZONE NORMALNE");
+	printf("zrób rzeby nazwy typu IsFull były uniwersalne np. IsFull -> IsQueueFull");
 
-	QueueTest();
+	EFF_SPEEDY_TEST();
 
 	return 0;
 }
