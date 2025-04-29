@@ -92,11 +92,16 @@ void InitQueue(Queue* queue, int In_Type, int Input_Max_Size) {
 
     queue->Max_Size = Input_Max_Size;
 
-    queue->Data = malloc(queue->Type * queue->Max_Size);
+	if(queue->Max_Size > 0) {
+    	queue->Data = malloc(queue->Type * queue->Max_Size);
+	}
+	else {
+		queue->Data = malloc(queue->Type * (queue->Max_Size + 1));
+	}
 }
 
 bool EffIsEmpty(EffQueue* queue) {
-    if(*queue->Size == 0) {
+    if(*queue->Size == 0 && *queue->Max_Size > 0) {
         return true;
     }
     else {
@@ -105,7 +110,7 @@ bool EffIsEmpty(EffQueue* queue) {
 }
 
 bool IsEmpty(Queue* queue) {
-    if(queue->Size == 0) {
+    if(queue->Size == 0 && queue->Max_Size > 0) {
         return true;
     }
     else {
@@ -148,7 +153,7 @@ bool IsFull(Queue* queue) {
     )
 
 void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
-    if(EffIsFull(queue) == false || *queue->Max_Size < 1) {
+    if(EffIsFull(queue) == false) {
         *queue->Size = *queue->Size + 1;
 
         queue->Data = realloc(queue->Data, *queue->Type * *queue->Size);
@@ -173,8 +178,7 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 
 
 void Advanced_Enqueue(Queue* queue, void* value) {
-	//sprawdz jeszcze dla nieskończonych
-	if(IsFull(queue) == false || queue->Max_Size < 1) {
+	if(IsFull(queue) == false) {
 		if(queue->Type == sizeof(int)) {
             ((int*)queue->Data)[queue->Size] = *(int*)value;
 		}
@@ -510,7 +514,34 @@ void QueueTest() {
     PrintQueue(&y, 3);
 }
 
+//2 times slower than Normal queue
+void EFF_SPEEDY_TEST() {
+	CreateEffIntQueue(test, 1000000000);
+	
+	for(int i = 1; i <= 1000000000; i++) {
+		EffEnqueue(&test, i);
+		//printf("w");
+	};
+	
+	 //PrintQueue(&test, 3);
+
+}
+
+//As fast as printf
+void SPEEDY_TEST() {
+	CreateIntQueue(test, 1000000000);
+	
+	for(int i = 1; i <= 1000000000; i++) {
+		//Enqueue(&test, i);
+		//printf("w");
+	};
+	
+	 //PrintQueue(&test, 3);
+}
+
 int main() {
+	printf("ZRÓB NIESKOŃCZONE NORMALNE");
+
 	QueueTest();
 
 	return 0;
