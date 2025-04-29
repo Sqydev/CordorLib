@@ -175,8 +175,6 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 void Advanced_Enqueue(Queue* queue, void* value) {
 	//sprawdz jeszcze dla nieskończonych
 	if(IsFull(queue) == false || queue->Max_Size < 1) {
-    	printf("Zrób Enqueue");
-		
 		if(queue->Type == sizeof(int)) {
             ((int*)queue->Data)[queue->Size] = *(int*)value;
 		}
@@ -209,7 +207,9 @@ void EffDequeue(EffQueue* queue) {
 
 void Dequeue(Queue* queue) {
     if (IsEmpty(queue) == false) {
-		printf("Zrób dequeue");
+		queue->Size = queue->Size - 1;
+
+        memmove(queue->Data, (char *)queue->Data + queue->Type, queue->Type * queue->Size);
 	}
 }
 
@@ -476,7 +476,7 @@ void QueueTest() {
     printf("\n");
 
     for(int i = 1; i <= 100; i++) {
-        //Enqueue(&q, i);
+        Enqueue(&q, i);
     }
 
     printf("After EnqueueClean: ");
