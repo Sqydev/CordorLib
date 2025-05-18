@@ -100,7 +100,7 @@ void InitQueue(Queue* queue, int In_Type, int Input_Max_Size) {
 	}
 }
 
-bool EffIsEmpty(EffQueue* queue) {
+bool EffIsQueueEmpty(EffQueue* queue) {
     if(*queue->Size == 0) {
         return true;
     }
@@ -109,7 +109,7 @@ bool EffIsEmpty(EffQueue* queue) {
     }
 }
 
-bool IsEmpty(Queue* queue) {
+bool IsQueueEmpty(Queue* queue) {
     if(queue->Size == 0) {
         return true;
     }
@@ -118,7 +118,7 @@ bool IsEmpty(Queue* queue) {
     }
 }
 
-bool EffIsFull(EffQueue* queue) {
+bool EffIsQueueFull(EffQueue* queue) {
     if(*queue->Size == *queue->Max_Size) {
         return true;
     }
@@ -127,7 +127,7 @@ bool EffIsFull(EffQueue* queue) {
     }
 }
 
-bool IsFull(Queue* queue) {
+bool IsQueueFull(Queue* queue) {
     if(queue->Size == queue->Max_Size) {
         return true;
     }
@@ -136,7 +136,7 @@ bool IsFull(Queue* queue) {
     }
 }
 
-bool EffIsInfinite(EffQueue* queue) {
+bool EffIsQueueInfinite(EffQueue* queue) {
 	if(*queue->Max_Size < 1) {
 		return true;
 	}
@@ -145,7 +145,7 @@ bool EffIsInfinite(EffQueue* queue) {
 	}
 }
 
-bool IsInfinite(Queue* queue) {
+bool IsQueueInfinite(Queue* queue) {
 	if(queue->Max_Size < 1) {
 		return true;
 	}
@@ -171,7 +171,7 @@ bool IsInfinite(Queue* queue) {
     )
 
 void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
-    if(EffIsFull(queue) == false || EffIsInfinite(queue) == true) {
+    if(EffIsQueueFull(queue) == false || EffIsQueueInfinite(queue) == true) {
         *queue->Size = *queue->Size + 1;
 
         queue->Data = realloc(queue->Data, *queue->Type * *queue->Size);
@@ -196,8 +196,8 @@ void Eff_Advanced_Enqueue(EffQueue* queue, void* value) {
 
 
 void Advanced_Enqueue(Queue* queue, void* value) {
-	if(IsFull(queue) == false || IsInfinite(queue) == true) {
-		if(IsInfinite(queue) == true) {
+	if(IsQueueFull(queue) == false || IsQueueInfinite(queue) == true) {
+		if(IsQueueInfinite(queue) == true) {
         	queue->Data = realloc(queue->Data, queue->Type * (queue->Size + 1));
 		}
 
@@ -222,7 +222,7 @@ void Advanced_Enqueue(Queue* queue, void* value) {
 }
 
 void EffDequeue(EffQueue* queue) {
-    if (EffIsEmpty(queue) == false) {
+    if (EffIsQueueEmpty(queue) == false) {
         *queue->Size = *queue->Size - 1;
 
         memmove(queue->Data, (char *)queue->Data + *queue->Type, *queue->Type * (*queue->Size));
@@ -232,7 +232,7 @@ void EffDequeue(EffQueue* queue) {
 }
 
 void Dequeue(Queue* queue) {
-    if (IsEmpty(queue) == false) {
+    if (IsQueueEmpty(queue) == false) {
 		queue->Size = queue->Size - 1;
 
         memmove(queue->Data, (char *)queue->Data + queue->Type, queue->Type * queue->Size);
@@ -258,7 +258,7 @@ void Dequeue(Queue* queue) {
     )
 
 void* Eff_Advanced_Peek(EffQueue* queue) {
-    if (!EffIsEmpty(queue)) {
+    if (!EffIsQueueEmpty(queue)) {
         if(*queue->Type == sizeof(int)) {
             return ((int *)queue->Data + 0);
         }
@@ -279,9 +279,9 @@ void* Eff_Advanced_Peek(EffQueue* queue) {
 }
 
 void* Advanced_Peek(Queue* queue) {
-	if (!IsEmpty(queue)) {
+	if (!IsQueueEmpty(queue)) {
         if(queue->Type == sizeof(int)) {
-            return ((int *)queue->Data + 0);
+            return (((int *)queue->Data + 0));
         }
         else if(queue->Type == sizeof(float)) {
             return ((float *)queue->Data + 0);
@@ -342,7 +342,7 @@ void DeleteQueue(Queue* queue) {
 }
 
 void EffPrintQueue(EffQueue* queue, int Mode) {
-    if(EffIsEmpty(queue) == false) {
+    if(EffIsQueueEmpty(queue) == false) {
         for(int i = 0; i < *queue->Size; i++) {
             if(*queue->Type == sizeof(int)) {
                 printf("%d", ((int *)queue->Data)[i]);
@@ -377,7 +377,7 @@ void EffPrintQueue(EffQueue* queue, int Mode) {
 }
 
 void PrintQueue(Queue* queue, int Mode) {
-    if(IsEmpty(queue) == false) {
+    if(IsQueueEmpty(queue) == false) {
         for(int i = 0; i < queue->Size; i++) {
             if(queue->Type == sizeof(int)) {
                 printf("%d", ((int *)queue->Data)[i]);
@@ -426,6 +426,8 @@ void EffQueueTest() {
     printf("Peek: %d\n\n", (int)EffPeek(&q));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", EffQueueSize(&q));
 
     EffDequeue(&q);
 
@@ -437,11 +439,15 @@ void EffQueueTest() {
     printf("Peek: %d\n\n", (int)EffPeek(&q));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", EffQueueSize(&q));
 
     EffCleanQueue(&q);
 
     printf("After Clean: ");
     EffPrintQueue(&q, 3);
+	
+	printf("\nSize(bytes): %lu\n", EffQueueSize(&q));
 
     printf("\n");
 
@@ -457,6 +463,8 @@ void EffQueueTest() {
     printf("Peek: %d\n\n", (int)EffPeek(&q));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", EffQueueSize(&q));
 
     printf("After DequeueClean: ");
     EffDequeue(&q);
@@ -468,6 +476,8 @@ void EffQueueTest() {
     printf("Peek: %d\n\n", (int)EffPeek(&q));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", EffQueueSize(&q));
 
     EffDeleteQueue(&q);
 
@@ -495,6 +505,8 @@ void QueueTest() {
 	printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Count: %d\n\n", CountQueue(&q));
+    
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
 
     Dequeue(&q);
 
@@ -507,12 +519,16 @@ void QueueTest() {
 
     printf("Count: %d\n\n", CountQueue(&q));
 
-    CleanQueue(&q);
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
+    
+	CleanQueue(&q);
 
     printf("After Clean: ");
     PrintQueue(&q, 3);
 
-    printf("\n");
+	printf("\nSize(bytes): %lu\n", QueueSize(&q));
+    
+	printf("\n");
 
     for(int i = 1; i <= 100; i++) {
         Enqueue(&q, i);
@@ -526,6 +542,8 @@ void QueueTest() {
     printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Count: %d\n\n", CountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
 
     printf("After DequeueClean: ");
     Dequeue(&q);
@@ -537,6 +555,8 @@ void QueueTest() {
     printf("Peek: %d\n\n", (int)Peek(&q));
 
     printf("Count: %d\n\n", CountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
 
     DeleteQueue(&q);
 
@@ -576,9 +596,9 @@ void SPEEDY_TEST() {
 }
 
 int main() {
-	printf("zrób rzeby nazwy typu IsFull były uniwersalne np. IsFull -> IsQueueFull, popraw README bo coś nie idzie");
+	printf("popraw README bo coś nie idzie");
 
-	SPEEDY_TEST();
+	QueueTest();
 
 	return 0;
 }
