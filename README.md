@@ -33,7 +33,7 @@
 
 ## 📍 Overview
 
-<code> CordorLib is hiper easy to use & hiper memory efficient queue library for Clang</code>
+<code> CordorLib is very easy to use & very memory efficient || very fast queue library for Clang</code>
 
 
 ## 👾 Features
@@ -47,7 +47,7 @@
 └── CordorLib/
     ├── LICENSE
     ├── README.md
-    ├── lib //Files to use
+    ├── lib //Files for you to use
     │   ├── Cordor.c
     │   └── Cordor.h
     └── src //My programing thingies
@@ -59,7 +59,7 @@
 
 ### ⚙️ Installation
 
-**Becouse of the fact that this is classic header & c file you just have to Copy From Git Repo and add flag when compiling:**
+**Becouse of the fact that this is classic header & c file you just have to Copy files From Git Repo and add flag when compiling:**
 
 1. Clone the CordorLib repository:
 ```sh
@@ -71,10 +71,10 @@
 ❯ cd CordorLib
 ```
 
-3. Copy .h and .c file from lib directory(or yust copy whole lib folder) to your project:
+3. Copy .h and .c file from the lib directory(or yust copy whole lib folder) to your project:
 
 ```sh
-❯ cp -r ~/CordorLib/lib ~/YourProject/
+❯ cp -r ~/CordorLib/lib {your project patch}
 ```
 
 4. Include lib in your project with:
@@ -89,36 +89,36 @@
 ❯ gcc -o YourProject.out YourProject.c YourProjectDir/lib/CordorLib.c
 ```
 
-- -o YourProject.out -- It's yust name of output file
+- -o YourProject.out -- Name of output file
 
-- YourProject.c -- It's yust name of YourProject file
+- YourProject.c -- Name of YourProject file
 
-- YourProjectDir/lib/CordorLib.c -- It's yust location of library file
+- YourProjectDir/lib/CordorLib.c -- Location of the library file
 
 
 ### 🤖 Usage
-Yust like, read the documentation, it's not that long(It's not out couse there will be big chainges and I don't want to rewrite It every update):
+The entire usage of library is in [Documentation](https://google.com)(For now It doesn't exist):
 - [Documentation](https://google.com)
 
 
 ## 📌 Project Roadmap
 
 - [X] **`Task 1`**: <strike>Easynes to use & memory efficiency</strike>
-- [ ] **`Task 2`**: Make 3 types of queue, one supermemeffi, one balanced and one superfast.
+- [X] **`Task 2`**: <strike>Make 2 types of queue, one supermemeffi and the other one fast but still memefi(normal).<strike>
 - [ ] **`Task 3`**: Improvements.
-- [ ] **`Task 4`**: Official Release.
+- [ ] **`Task 4`**: First Official Release and Documentation.
 
 
 ## 🔗 Important links
 
 - [Documentation](https://google.com)
-- somethingi
-- somethingi
+- something
+- something
 
 
 ## 🎗 License
 
-This project is protected under the [Mit](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
+This project is under the [Mit](https://choosealicense.com/licenses/mit/) License.
 
 ---
 
