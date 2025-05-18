@@ -13,39 +13,88 @@ typedef struct {
     int* Size;
     size_t* Type;
     void** Data;
+} EffQueue;
+
+typedef struct {
+    int Max_Size;
+    int Size;
+    size_t Type;
+    void** Data;
 } Queue;
 
-#define CreateQueue(name, In_Type, In_Max_Size) \
-    Queue name; \
-    InitQueue(&name, In_Type, In_Max_Size)
+#define CreateEffIntQueue(name, In_Max_Size) \
+    EffQueue name; \
+    InitEffQueue(&name, 0, In_Max_Size)
 
-void InitQueue(Queue* queue, char In_Type, int Input_Max_Size);
-bool IsEmpty(Queue* queue);
-bool IsFull(Queue* queue);
+#define CreateEffFloatQueue(name, In_Max_Size) \
+    EffQueue name; \
+    InitEffQueue(&name, 1, In_Max_Size)
+
+#define CreateEffCharQueue(name, In_Max_Size) \
+    EffQueue name; \
+    InitEffQueue(&name, 2, In_Max_Size)
+
+#define CreateEffDoubleQueue(name, In_Max_Size) \
+    EffQueue name; \
+    InitEffQueue(&name, 3, In_Max_Size)
+
+#define CreateEffLongQueue(name, In_Max_Size) \
+    EffQueue name; \
+    InitEffQueue(&name, 4, In_Max_Size)
+
+
+#define CreateIntQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 0, In_Max_Size)
+
+#define CreateFloatQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 1, In_Max_Size)
+
+#define CreateCharQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 2, In_Max_Size)
+
+#define CreateDoubleQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 3, In_Max_Size)
+
+#define CreateLongQueue(name, In_Max_Size) \
+    Queue name; \
+    InitQueue(&name, 4, In_Max_Size)
+
+#define EffEnqueue(queue, val) ( \
+    *(queue)->Type == sizeof(int) ? Eff_Advanced_Enqueue(queue, &(int){val}) : \
+    *(queue)->Type == sizeof(float) ? Eff_Advanced_Enqueue(queue, &(float){val}) : \
+    *(queue)->Type == sizeof(char) ? Eff_Advanced_Enqueue(queue, &(char){val}) : \
+    *(queue)->Type == sizeof(double) ? Eff_Advanced_Enqueue(queue, &(double){val}) : \
+    *(queue)->Type == sizeof(long) ? Eff_Advanced_Enqueue(queue, &(long){val}) : 0 \
+    )
 
 #define Enqueue(queue, val) ( \
-    *(queue)->Type == sizeof(int) ? Advanced_Enqueue(queue, &(int){val}) : \
-    *(queue)->Type == sizeof(float) ? Advanced_Enqueue(queue, &(float){val}) : \
-    *(queue)->Type == sizeof(char) ? Advanced_Enqueue(queue, &(char){val}) : \
-    *(queue)->Type == sizeof(double) ? Advanced_Enqueue(queue, &(double){val}) : \
-    *(queue)->Type == sizeof(long) ? Advanced_Enqueue(queue, &(long){val}) : 0 \
+    (queue)->Type == sizeof(int) ? Advanced_Enqueue(queue, &(int){val}) : \
+    (queue)->Type == sizeof(float) ? Advanced_Enqueue(queue, &(float){val}) : \
+    (queue)->Type == sizeof(char) ? Advanced_Enqueue(queue, &(char){val}) : \
+    (queue)->Type == sizeof(double) ? Advanced_Enqueue(queue, &(double){val}) : \
+    (queue)->Type == sizeof(long) ? Advanced_Enqueue(queue, &(long){val}) : 0 \
     )
 
-void Advanced_Enqueue(Queue* queue, void* value);
-void Dequeue(Queue* queue);
+#define EffPeek(queue) ( \
+	Eff_Advanced_Peek(queue) == NULL ? 0 : \
+	*(queue)->Type == sizeof(int) ? *(int *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(float) ? *(float *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(char) ? *(char *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(double) ? *(double *)Eff_Advanced_Peek(queue) : \
+    *(queue)->Type == sizeof(long) ? *(long *)Eff_Advanced_Peek(queue) : 0 \
+    )
 
 #define Peek(queue) ( \
-    *(queue)->Type == sizeof(int) ? *(int *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(float) ? *(float *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(char) ? *(char *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(double) ? *(double *)Advanced_Peek(queue) : \
-    *(queue)->Type == sizeof(long) ? *(long *)Advanced_Peek(queue) : 0 \
+	Advanced_Peek(queue) == NULL ? 0 : \
+    (queue)->Type == sizeof(int) ? *(int *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(float) ? *(float *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(char) ? *(char *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(double) ? *(double *)Advanced_Peek(queue) : \
+    (queue)->Type == sizeof(long) ? *(long *)Advanced_Peek(queue) : 0 \
     )
-
-void* Advanced_Peek(Queue* queue);
-int CountQueue(Queue* queue);
-void CleanQueue(Queue* queue);
-void DeleteQueue(Queue* queue);
-void PrintQueue(Queue* queue, int Mode);
 
 #endif

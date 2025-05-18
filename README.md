@@ -104,7 +104,7 @@ The entire usage of library is in [Documentation](https://google.com)(For now It
 ## 📌 Project Roadmap
 
 - [X] **`Task 1`**: <strike>Easynes to use & memory efficiency</strike>
-- [X] **`Task 2`**: <strike>Make 2 types of queue, one supermemeffi and the other one fast but still memefi(normal).<strike>
+- [X] **`Task 2`**: <strike>Make 2 types of queue, one supermemeffi and the other one fast but still memefi(normal).</strike>
 - [ ] **`Task 3`**: Improvements.
 - [ ] **`Task 4`**: First Official Release and Documentation.
 
