@@ -97,7 +97,7 @@
 
 
 ### 🤖 Usage
-The entire usage of library is in [Documentation](https://github.com/Sqydev/CordorLib/wiki)(For now It doesn't exist):
+The entire usage of library is documented in [Documentation](https://github.com/Sqydev/CordorLib/wiki):
 - [Documentation](https://github.com/Sqydev/CordorLib/wiki)
 
 
@@ -106,7 +106,8 @@ The entire usage of library is in [Documentation](https://github.com/Sqydev/Cord
 - [X] **`Task 1`**: <strike>Easynes to use & memory efficiency</strike>
 - [X] **`Task 2`**: <strike>Make 2 types of queue, one supermemeffi and the other one fast but still memefi(normal).</strike>
 - [ ] **`Task 3`**: Improvements.
-- [ ] **`Task 4`**: First Official Release and Documentation.
+- [ ] **`Task 4`**: First Official Release.
+- [ ] **`Task 5`**: More Improvements.
 
 
 ## 🔗 Important links
