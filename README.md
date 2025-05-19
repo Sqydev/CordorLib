@@ -97,8 +97,8 @@
 
 
 ### 🤖 Usage
-The entire usage of library is in [Documentation](https://google.com)(For now It doesn't exist):
-- [Documentation](https://google.com)
+The entire usage of library is in [Documentation](https://github.com/Sqydev/CordorLib/wiki)(For now It doesn't exist):
+- [Documentation](https://github.com/Sqydev/CordorLib/wiki)
 
 
 ## 📌 Project Roadmap
@@ -111,7 +111,7 @@ The entire usage of library is in [Documentation](https://google.com)(For now It
 
 ## 🔗 Important links
 
-- [Documentation](https://google.com)
+- [Documentation](https://github.com/Sqydev/CordorLib/wiki)
 - something
 - something
 
