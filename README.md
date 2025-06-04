@@ -17,7 +17,7 @@
 	<!-- default option, no dependency badges. -->
 </p>
 <br>
-
+###Warning: It doesn't have sync for now, you have to do it yourself.
 ## 🗺️ Table of Contents
 
 - [📍 Overview](#-overview)

@@ -596,8 +596,6 @@ void SPEEDY_TEST() {
 }
 
 int main() {
-	printf("popraw README bo coś nie idzie");
-
 	QueueTest();
 
 	return 0;
