@@ -1,5 +1,5 @@
 //**********************************************************************************************
-// Copyright (c) 2024-2025 Wojciech Kaptur (@Sqydev)
+// Copyright (c) 2024-2025 Wojciech Kaptur / _Sqyd_ / Sqydev / https://github.com/Sqydev
 //
 //This software is provided "as-is", without any express or implied warranty. In no event 
 //will the authors be held liable for any damages arising from the use of this software.
