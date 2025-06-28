@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// ZRÓB ŻE TO PRZECHOWÓJE W VOID* a nie INT, FLOAT ITP. bo wtedy nie można dać structów!!!!!!!!!!!!!!!!!!!
+
 typedef struct {
     int* Max_Size;
     int* Size;
