@@ -311,6 +311,11 @@ void EffQueueTest() {
 }
 
 void QueueTest() {
+	typedef struct TESTER {
+		int x;
+		int y;
+	} TESTER; 
+
     CreateQueue(q, 100);
 
     for(int i = 0; i < 100; i++) {
@@ -389,6 +394,17 @@ void QueueTest() {
     printf("Count: %d\n\n", CountQueue(&q));
 	
 	printf("Size(bytes): %lu\n\n", QueueSize(&q));
+
+	//Test with struct
+	TESTER tester = {5, 0};
+	
+	CleanQueue(&q);
+
+	Enqueue(&q, &tester);
+
+    for(int i = 0; i < *&q.Size; i++) {
+		printf("| %d |", Peek(&q, i, int));
+	}
 
     DeleteQueue(&q);
 }
