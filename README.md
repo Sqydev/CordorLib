@@ -106,8 +106,10 @@ The entire usage of library is documented in [Documentation](https://github.com/
 - [X] **`Task 1`**: <strike>Easynes to use & memory efficiency</strike>
 - [X] **`Task 2`**: <strike>Make 2 types of queue, one supermemeffi and the other one fast but still memefi(normal).</strike>
 - [ ] **`Task 3`**: Improvements.
-- [ ] **`Task 4`**: First Official Release.
-- [ ] **`Task 5`**: More Improvements.
+- [ ] **`Task 4`**: Do so you can Peek and it automaticly chooses Effpeek || Peek dependent of what input queue is.
+- [ ] **`Task 5`**: Make printing entire queue easier. so no for(int i = 0; i < **&q->Size thing).
+- [ ] **`Task 6`**: First Official Release.
+- [ ] **`Task 7`**: More Improvements.
 
 
 ## 🔗 Important links

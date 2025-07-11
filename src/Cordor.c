@@ -165,19 +165,25 @@ void Dequeue(Queue* queue) {
 	}
 }
 
-void* EffPeek(EffQueue* queue, int Position) {
+#define EffPeek(queue, position, type) \
+	*(type *)AdvancedEffPeek(queue, position)
+
+void* AdvancedEffPeek(EffQueue* queue, int Position) {
     if (!EffIsQueueEmpty(queue)) {
         return ((void**)queue->Data[Position]);
     }
     return NULL;
 }
 
-void* Peek(Queue* queue, int Position) {
-	if (!IsQueueEmpty(queue)) {
-    	return ((void**)queue->Data[Position]);
+#define Peek(queue, position, type) \
+	*(type *)AdvancedPeek(queue, position)
+
+void* AdvancedPeek(Queue* queue, int position) {
+	if(!IsQueueEmpty(queue)) {
+    	return ((void**)queue->Data[position]);
     }
-    return NULL;
-} 
+	return NULL;
+}
 
 int EffCountQueue(EffQueue* queue) {
     return *queue->Size;
@@ -223,16 +229,18 @@ void DeleteQueue(Queue* queue) {
 void EffQueueTest() {
     CreateEffQueue(q, 100);
 
-    for(int i = 1; i <= 100; i++) {
+    for(int i = 0; i < 100; i++) {
         EffEnqueue(&q, &i);
     }
 
     printf("After Enqueue: ");
-	printf("| %d |", EffPeek(&q, 0));
+	for(int i = 0; i < **&q.Size; i++) {	
+		printf("| %d |", EffPeek(&q, i, int));
+	}
 
     printf("\n");
 
-    printf("Peek: %d\n\n", EffPeek(&q, 0));
+    printf("Peek: %d\n\n", EffPeek(&q, 0, int));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
 	
@@ -241,11 +249,13 @@ void EffQueueTest() {
     EffDequeue(&q);
 
     printf("After Dequeue: ");
-	printf("| %d |", EffPeek(&q, 0));
+	for(int i = 0; i < **&q.Size; i++) {	
+		printf("| %d |", EffPeek(&q, i, int));
+	}
 
     printf("\n");
 
-    printf("Peek: %d\n\n", EffPeek(&q, 0));
+    printf("Peek: %d\n\n", EffPeek(&q, 0, int));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
 	
@@ -254,35 +264,43 @@ void EffQueueTest() {
     EffCleanQueue(&q);
 
     printf("After Clean: ");
-	printf("| %d |", EffPeek(&q, 0));
-	
+	for(int i = 0; i < **&q.Size; i++) {	
+		printf("| %d |", EffPeek(&q, i, int));
+	}
+
+	printf("\n");
+
 	printf("\nSize(bytes): %lu\n", EffQueueSize(&q));
 
     printf("\n");
 
-    for(int i = 1; i <= 100; i++) {
+    for(int i = 0; i < 50; i++) {
         EffEnqueue(&q, &i);
     }
 
     printf("After EnqueueClean: ");
-	printf("| %d |", EffPeek(&q, 0));
+	for(int i = 0; i < **&q.Size; i++) {	
+		printf("| %d |", EffPeek(&q, i, int));
+	}
 
     printf("\n");
 
-    printf("Peek: %d\n\n", EffPeek(&q, 0));
+    printf("Peek: %d\n\n", EffPeek(&q, 0, int));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
 	
 	printf("Size(bytes): %lu\n\n", EffQueueSize(&q));
+    
+	EffDequeue(&q);
 
     printf("After DequeueClean: ");
-    EffDequeue(&q);
-
-	printf("| %d |", EffPeek(&q, 0));
+	for(int i = 0; i < **&q.Size; i++) {	
+		printf("| %d |", EffPeek(&q, i, int));
+	}
 
     printf("\n");
 
-    printf("Peek: %d\n\n", EffPeek(&q, 0));
+    printf("Peek: %d\n\n", EffPeek(&q, 0, int));
 
     printf("Count: %d\n\n", EffCountQueue(&q));
 	
@@ -290,92 +308,89 @@ void EffQueueTest() {
 
     EffDeleteQueue(&q);
 
-    //Should give error
-
-    //EffPrintQueue(&q, 3);
-
-    CreateEffQueue(y, 0);
-
-	printf("| %d |", EffPeek(&q, 0));
 }
 
 void QueueTest() {
     CreateQueue(q, 100);
 
-    for(int i = 1; i <= 100; i++) {
+    for(int i = 0; i < 100; i++) {
         Enqueue(&q, &i);
 	}
 
     printf("After Enqueue: ");
-    printf("| %d |", *(int *)Peek(&q, 0));
+    for(int i = 0; i < *&q.Size; i++) {
+		printf("| %d |", Peek(&q, i, int));
+	}
 
-    //printf("\n");
-
-	//printf("Peek: %d\n\n", (int)Peek(&q));
-
-    //printf("Count: %d\n\n", CountQueue(&q));
+    printf("\n\n");
     
-	//printf("Size(bytes): %lu\n\n", QueueSize(&q));
+	printf("Peek: %d\n\n", Peek(&q, 0, int));
 
-    //Dequeue(&q);
-
-    //printf("After Dequeue: ");
-    //PrintQueue(&q, 3);
-
-    //printf("\n");
-
-    //printf("Peek: %d\n\n", (int)Peek(&q));
-
-    //printf("Count: %d\n\n", CountQueue(&q));
-
-	//printf("Size(bytes): %lu\n\n", QueueSize(&q));
+    printf("Count: %d\n\n", CountQueue(&q));
     
-	//CleanQueue(&q);
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
 
-    //printf("After Clean: ");
-    //PrintQueue(&q, 3);
+    Dequeue(&q);
 
-	//printf("\nSize(bytes): %lu\n", QueueSize(&q));
+    printf("After Dequeue: ");
+    for(int i = 0; i < *&q.Size; i++) {
+		printf("| %d |", Peek(&q, i, int));
+	}
+
+    printf("\n\n");
+
+    printf("Peek: %d\n\n", Peek(&q, 0, int));
+
+    printf("Count: %d\n\n", CountQueue(&q));
+
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
     
-	//printf("\n");
+	CleanQueue(&q);
 
-    //for(int i = 1; i <= 100; i++) {
-    //    Enqueue(&q, &i);
-    //}
-
-    //printf("After EnqueueClean: ");
-    //PrintQueue(&q, 3);
-
-    //printf("\n");
-
-    //printf("Peek: %d\n\n", (int)Peek(&q));
-
-    //printf("Count: %d\n\n", CountQueue(&q));
+    printf("After Clean: ");
+    for(int i = 0; i < *&q.Size; i++) {
+		printf("| %d |", Peek(&q, i, int));
+	}
 	
-	//printf("Size(bytes): %lu\n\n", QueueSize(&q));
+	printf("\n");
 
-    //printf("After DequeueClean: ");
-    //Dequeue(&q);
+	printf("\nSize(bytes): %lu\n", QueueSize(&q));
+    
+	printf("\n");
 
-    //PrintQueue(&q, 3);
+    for(int i = 1; i < 50; i++) {
+        Enqueue(&q, &i);
+    }
 
-    //printf("\n");
+    printf("After EnqueueClean: ");
+    for(int i = 0; i < *&q.Size; i++) {
+		printf("| %d |", Peek(&q, i, int));
+	}
 
-    //printf("Peek: %d\n\n", (int)Peek(&q));
+    printf("\n");
 
-    //printf("Count: %d\n\n", CountQueue(&q));
+    printf("Peek: %d\n\n", Peek(&q, 0, int));
+
+    printf("Count: %d\n\n", CountQueue(&q));
 	
-	//printf("Size(bytes): %lu\n\n", QueueSize(&q));
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
 
-    //DeleteQueue(&q);
+    printf("After DequeueClean: ");
+    Dequeue(&q);
 
-    //Should give error
+    for(int i = 0; i < *&q.Size; i++) {
+		printf("| %d |", Peek(&q, i, int));
+	}
 
-    //PrintQueue(&q, 3);
+    printf("\n");
 
-    //CreateQueue(y, 0);
+    printf("Peek: %d\n\n", Peek(&q, 0, int));
 
-    //PrintQueue(&y, 3);
+    printf("Count: %d\n\n", CountQueue(&q));
+	
+	printf("Size(bytes): %lu\n\n", QueueSize(&q));
+
+    DeleteQueue(&q);
 }
 
 //2 times slower than Normal queue

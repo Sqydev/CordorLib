@@ -1,0 +1,1 @@
+:!gcc -o compiled-tests/CordorLibTest.out src/Cordor.c && ./compiled-tests/CordorLibTest.out
